@@ -8,4 +8,4 @@ Public documentation mirror for the [xu75/agent-mesh](https://github.com/xu75/ag
 - [Debate 20R](docs/debate-20r.md)
 - [Feature Docs](docs/features)
 
-Synced from source commit: a9589c7639f317daed688fcc2c5da7d01e41583d
+Synced from source commit: ddf3575231feda27c1f12c0d803b9d7902e7258e
