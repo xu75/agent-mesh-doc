@@ -1,6 +1,6 @@
 # agent-mesh-doc
 
-Public documentation mirror for the `agent-mesh` project.
+Public documentation mirror for the [xu75/agent-mesh](https://github.com/xu75/agent-mesh) project.
 
 ## Documentation
 
@@ -8,4 +8,4 @@ Public documentation mirror for the `agent-mesh` project.
 - [Debate 20R](docs/debate-20r.md)
 - [Feature Docs](docs/features)
 
-Source repository: https://github.com/xu75/agent-mesh
+Synced from source commit: 8bc7440b35b4c8babd37e00b25bdab03316864d6
