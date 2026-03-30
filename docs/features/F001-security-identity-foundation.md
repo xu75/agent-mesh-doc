@@ -8,7 +8,7 @@ created: 2026-03-30
 
 # F001: Security & Identity Foundation (W1-W2)
 
-> Status: spec | Owner: 宪宪
+> Status: in-progress | Owner: 宪宪
 
 ## Why
 
@@ -38,21 +38,21 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 
 ### E1 — 身份链完整性
 
-- [ ] AC-1: L0 密钥对生成 — 节点可生成 Ed25519 密钥对并持久化存储
-- [ ] AC-2: L1 证书签发 — Hub 接收节点 L0 公钥 + 注册请求 → 签发 JWT Mesh Certificate（EdDSA 签名，含 nodeId/pubkey/expiry）
-- [ ] AC-3: L1 证书验证 — 任意节点可用 Hub 公钥验证 L1 证书，篡改任一字段即拒绝
-- [ ] AC-4: L2 令牌签发 — Hub 根据 L1 证书签发 Invocation Token（JWT，含 scope/ttl/jti）
-- [ ] AC-5: L2 令牌验证 — 接收方可验证 L2 令牌的签名、scope、ttl，过期或越权即拒绝
-- [ ] AC-6: 全链完整性 — 篡改 L0/L1/L2 中任一层，调用链中的验证步骤立即拒绝（测试覆盖 >= 5 种篡改场景）
+- [x] AC-1: L0 密钥对生成 — 节点可生成 Ed25519 密钥对并持久化存储
+- [x] AC-2: L1 证书签发 — Hub 接收节点 L0 公钥 + 注册请求 → 签发 JWT Mesh Certificate（EdDSA 签名，含 nodeId/pubkey/expiry）
+- [x] AC-3: L1 证书验证 — 任意节点可用 Hub 公钥验证 L1 证书，篡改任一字段即拒绝
+- [x] AC-4: L2 令牌签发 — Hub 根据 L1 证书签发 Invocation Token（JWT，含 scope/ttl/jti）
+- [x] AC-5: L2 令牌验证 — 接收方可验证 L2 令牌的签名、scope、ttl，过期或越权即拒绝
+- [x] AC-6: 全链完整性 — 篡改 L0/L1/L2 中任一层，调用链中的验证步骤立即拒绝（测试覆盖 >= 5 种篡改场景）
 
 ### E2 — 安全基线
 
 - [ ] AC-7: mTLS 握手 — 双向 TLS 认证成功率 >= 99.5%（1000 次握手测试）
 - [ ] AC-8: mTLS 拒绝 — 无证书或无效证书的连接 100% 被拒绝
-- [ ] AC-9: jti 重放防护 — 相同 jti 的 L2 令牌 100% 被拒绝（含并发重放场景）
-- [ ] AC-10: 过期令牌拒绝 — ttl 过期的令牌 100% 被拒绝
-- [ ] AC-11: 撤销证书拒绝 — Hub 撤销 L1 证书后，后续请求被拒绝
-- [ ] AC-12: HELLO/CAPS 握手 — 两个节点可完成 HELLO → CAPS 握手流程，交换能力声明
+- [x] AC-9: jti 重放防护 — 相同 jti 的 L2 令牌 100% 被拒绝（含并发重放场景）
+- [x] AC-10: 过期令牌拒绝 — ttl 过期的令牌 100% 被拒绝
+- [x] AC-11: 撤销证书拒绝 — Hub 撤销 L1 证书后，后续请求被拒绝
+- [x] AC-12: HELLO/CAPS 握手 — 两个节点可完成 HELLO → CAPS 握手流程，交换能力声明
 
 ### 量化指标
 
@@ -98,6 +98,13 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | mTLS 配置复杂度超预期 | 提供一键证书生成脚本；W1 先用自签 CA |
 | jti 内存缓存在 Hub 重启后丢失 | TTL 短（默认 5min），重启窗口内的重放风险可接受；后续持久化 |
 | Ed25519 在旧 Node.js 版本不支持 | 锁定 Node.js >= 20；CI 验证 |
+
+## Timeline
+
+| Date | Event |
+|------|-------|
+| 2026-03-30 | W1 identity foundation merged to main (T1-T7) |
+| 2026-03-31 | W2 HELLO client + CAPS endpoint merged (PR #1, T8/T9) |
 
 ## Open Questions
 
