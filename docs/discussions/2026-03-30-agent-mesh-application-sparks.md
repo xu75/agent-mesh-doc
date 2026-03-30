@@ -131,3 +131,35 @@ Mesh Rescue / 众筹求解模式
 2. `mesh:sos`（失败升级求助）
 3. `mesh:jury`（高风险决策陪审）
 4. `mesh:bounty`（预算与激励模型，先做最小积分版）
+
+## 9. 第二轮补充：失败边界与系统自愈（Opus）
+
+已有章节更多描述“求助成功”的正路径，本节补“失败前/失败中/失败后/全局失败”的闭环。
+
+## 9.1 `mesh:preflight`（Speculative Preflight）
+- 触发：任务开始前做轻量预判（技能匹配 + 历史成功率 + 上下文复杂度），`preflight_score < 0.4` 时直接升级
+- 价值：减少“注定失败的本地尝试”，缩短用户等待
+- 护栏：预判计算必须轻量（如 <500 tokens）；阈值动态校准；用户可强制 override
+- 优先级：P1（依赖 `mesh:registry` 数据）
+
+## 9.2 `mesh:dedup`（Failure Dedup）
+- 触发：新 SOS 进入时按 `{问题签名, 技能标签, 错误模式}` 做相似度匹配，命中 open rescue 则合并
+- 价值：同类问题 N 次求助合并成 1 次协作，显著降低 mesh 负载
+- 护栏：保守阈值避免误合并；保留 subscriber 的上下文差异；TTL 过期后可拆分
+- 优先级：P2（需要问题签名/embedding 基础设施）
+
+## 9.3 `mesh:backfill`（Capability Backfill）
+- 触发：SOS 成功后，若复现概率高（`recurrence_score > 0.6`）自动创建能力回填任务
+- 价值：第一次靠 Mesh，第二次尽量本地自解；长期降低求助频率
+- 护栏：回填产物需在历史 case 回测通过再入库；防止过拟合单个 case
+- 优先级：P2（依赖 `mesh:sos` + `Failure-to-Skill` 流程）
+
+## 9.4 `mesh:surrender`（Graceful Surrender）
+- 触发：候选方案全部验证失败、TTL 超时无人响应、或 peer 置信度集体过低
+- 价值：在无法解决时提供结构化可接力包，而不是“空失败”
+- 护栏：不得过早认输；必须输出标准化调查报告；自动标记 `human_escalation`
+- 优先级：P1（无此能力时，Mesh 失败体验会劣于单 Agent）
+
+## 9.5 生命周期补全图（简版）
+
+`请求 -> mesh:preflight -> (本地解/升级) -> mesh:sos + mesh:dedup -> (成功: mesh:backfill / 失败: mesh:surrender)`
