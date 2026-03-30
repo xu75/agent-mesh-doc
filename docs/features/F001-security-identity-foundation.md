@@ -106,6 +106,18 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | 2026-03-30 | W1 identity foundation merged to main (T1-T7) |
 | 2026-03-31 | W2 HELLO client + CAPS endpoint merged (PR #1, T8/T9) |
 
+## Execution Decision (2026-03-31)
+
+`@co-creator` approved **Plan C (Go with Guardrails)**:
+
+1. Proceed to W3 (`INVOKE/RESULT`) immediately to validate core interoperability value.
+2. Keep hard guardrails until mTLS is completed:
+   - No external/untrusted network admission.
+   - Do not claim E2 fully complete while AC-7/8 are open.
+   - Mark E2 as partially complete in Mission Hub/workflow.
+3. After first W3 end-to-end invocation success, return to complete T10 (mTLS) + T12 (quant benchmarks) within one milestone (target <= 5 days).
+4. Phase 2 (heterogeneous runtime onboarding) is blocked until AC-7/8 pass.
+
 ## Open Questions
 
 1. L1 证书的默认有效期？建议 30 天，支持续期
