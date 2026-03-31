@@ -108,6 +108,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | 2026-03-31 | Plan C approved — skip mTLS, go W3 with guardrails |
 | 2026-03-31 | W3 INVOKE relay merged (PR #2, `fbd86ef`) — Hub A+ constraints + Node B local verification |
 | 2026-03-31 | T10 mTLS merged (PR #3) — AC-7/AC-8 complete, F001 12/12 ACs |
+| 2026-03-31 | T13 SCOPE_DENIED merged (PR #4) — explicit rejection + audit log, W4 scenario 2 |
 
 ## Phase Progress Summary (2026-03-31)
 
@@ -119,6 +120,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | W2 | HELLO client, CAPS endpoint, L1/L2 type confusion P0 fix | PR #1 merged → `7b46c94` |
 | W3 | INVOKE relay + security hardening (scope enforcement, Node B local verify, fail-closed) | PR #2 merged → `fbd86ef`, 61 tests (38 hub + 23 node) |
 | T10 | mTLS transport layer (AC-7/AC-8) + MeshClient mTLS integration | PR #3 merged, 67 tests (42 hub + 25 node) |
+| T13 | SCOPE_DENIED explicit rejection on /v1/token + /v1/invoke (W4 scenario 2) | PR #4 merged `caae326`, 70 tests |
 
 ### AC Status: 12/12 ✅
 
@@ -128,8 +130,10 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 ### Open Items (遗留敞口)
 
 1. **T12 quantitative tests**: 1000-handshake benchmark (AC-7 already covered by mTLS test, may need separate E1 bench)
-2. **STREAM mode**: not implemented, current INVOKE is request/response only
-3. **Hub response whitelist**: Hub assembles RESULT by spreading downstream response — should restrict allowed fields
+2. **T14 紧急证书撤销**: cert revoke → invoke rejected ≤60s (W4 scenario 3)
+3. **T15 审计回放**: `GET /v1/audit/trace/:traceId` → 完整事件时间线 (W4 scenario 4)
+4. **STREAM mode**: not implemented, current INVOKE is request/response only
+5. **Hub response whitelist**: Hub assembles RESULT by spreading downstream response — should restrict allowed fields
 
 ### Handoff Notes
 
