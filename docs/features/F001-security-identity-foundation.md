@@ -8,7 +8,7 @@ created: 2026-03-30
 
 # F001: Security & Identity Foundation (W1-W2)
 
-> Status: in-progress (AC 12/12, pending T12 quant bench) | Owner: 宪宪
+> Status: complete (AC 12/12, T12 quant bench ✅) | Owner: 宪宪
 
 ## Why
 
@@ -134,18 +134,18 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 
 ### Open Items (遗留敞口)
 
-1. **T12 quantitative tests**: 1000-handshake benchmark (AC-7 already covered by mTLS test, may need separate E1 bench)
+1. ~~**T12 quantitative tests**~~ ✅ `AC-7: 1000 mTLS handshakes achieve >= 99.5% success rate` in `mtls.test.ts` — 1000/1000 pass at CONCURRENCY=50
 2. ~~**T14 紧急证书撤销**~~ ✅ merged PR #5 + PR #7
 3. ~~**T15 审计回放**~~ ✅ merged PR #8
-4. **STREAM mode**: not implemented, current INVOKE is request/response only
-5. **Hub response whitelist**: Hub assembles RESULT by spreading downstream response — should restrict allowed fields
+4. **STREAM mode**: not implemented, current INVOKE is request/response only (Phase 2)
+5. **Hub response whitelist**: Hub assembles RESULT by spreading downstream response — should restrict allowed fields (Phase 2)
 
 ### Handoff Notes
 
 - **W4 scenarios 1-4 complete**: all MVP verification scenarios merged
 - **Evidence**: 77 tests (51 hub + 26 node), biome clean, all cross-family reviewed
-- **Remaining**: T12 quantitative bench (1000-handshake perf test)
-- **Next step**: T12 → W4 wrap-up → Phase 2 readiness assessment
+- **Remaining**: None — F001 fully complete
+- **Next step**: Phase 2 readiness assessment (heterogeneous runtime onboarding)
 
 ## Execution Decision (2026-03-31)
 
