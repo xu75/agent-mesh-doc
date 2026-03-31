@@ -137,10 +137,11 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 
 ### Handoff Notes
 
-- **T10 merged**: PR #3 on main — F001 AC 12/12 complete
-- **Evidence**: 67 tests (42 hub + 25 node), biome clean, cross-family review (2 rounds)
+- **T13 merged**: PR #4 on main (`caae326`) — SCOPE_DENIED explicit rejection
+- **Evidence**: 70 tests (45 hub + 25 node), biome clean, cross-family review (2 rounds)
 - **Plan C guardrails**: mTLS backfill done within deadline (2026-04-05)
-- **Next step**: T12 quantitative tests → W4 planning
+- **W4 progress**: scenario 2 (SCOPE_DENIED) complete, next T14 (cert revocation) + T15 (audit trace)
+- **Next step**: T14 emergency cert revocation → T15 audit replay → T12 quant bench
 
 ## Execution Decision (2026-03-31)
 
