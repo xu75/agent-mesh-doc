@@ -105,6 +105,39 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 |------|-------|
 | 2026-03-30 | W1 identity foundation merged to main (T1-T7) |
 | 2026-03-31 | W2 HELLO client + CAPS endpoint merged (PR #1, T8/T9) |
+| 2026-03-31 | Plan C approved — skip mTLS, go W3 with guardrails |
+| 2026-03-31 | W3 INVOKE relay implemented (`feat/w3-invoke`, pending review) |
+
+## Phase Progress Summary (2026-03-31)
+
+### Completed
+
+| Week | Deliverable | Evidence |
+|------|-------------|----------|
+| W1 | L0 Ed25519 keypair, L1 Mesh Cert, L2 Invocation Token, jti replay/expiry/revocation, Hub skeleton | 38 hub + 13 node tests |
+| W2 | HELLO client, CAPS endpoint, L1/L2 type confusion P0 fix | PR #1 merged → `7b46c94` |
+| W3 | INVOKE relay (Hub A+ constraints), MeshServer callback, MeshClient.invoke() | commit `616adc1`, 57 tests (38 hub + 19 node), pending @codex review |
+
+### AC Status: 10/12
+
+- E1 (AC-1~6): all complete — identity chain integrity
+- E2 (AC-9~12): complete — replay/expiry/revocation/handshake
+- E2 (AC-7/AC-8): **open** — mTLS bilateral auth, blocked by Plan C guardrails
+
+### Open Items (遗留敞口)
+
+1. **W3 review pending**: `feat/w3-invoke` sent to @codex for cross-family review, awaiting response
+2. **Node B L2 second verification**: Hub verifies L2, but Node B does not re-verify the forwarded token — needs decision (this round or next)
+3. **T10 mTLS**: Plan C guardrail requires completion within ≤5 days after first e2e success
+4. **T12 quantitative tests**: 1000-handshake benchmark not yet run
+5. **STREAM mode**: not implemented, current INVOKE is request/response only
+
+### Handoff Notes
+
+- **Worktree**: `/Users/xujinsong/VSCode/SynologyDrive/agent-mesh-w3-invoke` on branch `feat/w3-invoke`
+- **Build/test**: `pnpm build` clean, 57/57 tests pass, biome clean
+- **Next step**: @codex review → receive-review → merge-gate → PR #2
+- **After merge**: backfill T10 (mTLS) + T12 (quant tests) per Plan C guardrails
 
 ## Execution Decision (2026-03-31)
 
