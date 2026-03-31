@@ -16,7 +16,7 @@ Any agent runtime can join via either path:
 
 | Path | Description | Current Stage |
 |------|-------------|---------------|
-| Plugin Adapter | Implement a plugin/adapter that maps local runtime semantics to Agent Mesh protocol and identity flow. | Planned |
+| Plugin Adapter | Implement a plugin/adapter that maps local runtime semantics to Agent Mesh protocol and identity flow. | In progress (`@agent-mesh/adapter`: Clowder/OpenClaw) |
 | Native Protocol | Implement the open protocol directly (HELLO/CAPS/INVOKE/STREAM/RESULT/ERROR + identity token model). | In progress |
 
 ## Status (2026-03-30)
@@ -38,6 +38,7 @@ In progress:
 
 ```text
 packages/
+  mesh-adapter/   Runtime plugin adapter (Clowder/OpenClaw -> Mesh semantics)
   mesh-hub/       Hub service (registration, issuance, revocation)
   mesh-node/      Node SDK (placeholder in current phase)
   mesh-protocol/  Shared protocol and identity definitions
@@ -96,6 +97,7 @@ Hard stop at W6: if any metric fails, fall back to single-node enhancement.
 - [README](README.md) for project entry.
 - [20-round debate](docs/debate-20r.md) for architecture reasoning.
 - [F001 spec](docs/features/F001-security-identity-foundation.md) for current implementation contract and AC.
+- [F002 spec](docs/features/F002-plugin-adapter-dual-stack.md) for dual-stack adapter contract.
 - [BACKLOG](BACKLOG.md) for active feature tracking.
 
 ## Related
