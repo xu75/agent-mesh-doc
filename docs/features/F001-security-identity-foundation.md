@@ -110,6 +110,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | 2026-03-31 | T10 mTLS merged (PR #3) — AC-7/AC-8 complete, F001 12/12 ACs |
 | 2026-03-31 | T13 SCOPE_DENIED merged (PR #4) — explicit rejection + audit log, W4 scenario 2 |
 | 2026-03-31 | T14 cert revocation propagation merged (PR #5) — l1Jti in L2 token, 0ms propagation, W4 scenario 3 |
+| 2026-03-31 | T14 target cert revocation + re-HELLO regression merged (PR #7) — dual revocation check |
 
 ## Phase Progress Summary (2026-03-31)
 
@@ -122,7 +123,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | W3 | INVOKE relay + security hardening (scope enforcement, Node B local verify, fail-closed) | PR #2 merged → `fbd86ef`, 61 tests (38 hub + 23 node) |
 | T10 | mTLS transport layer (AC-7/AC-8) + MeshClient mTLS integration | PR #3 merged, 67 tests (42 hub + 25 node) |
 | T13 | SCOPE_DENIED explicit rejection on /v1/token + /v1/invoke (W4 scenario 2) | PR #4 merged `caae326`, 70 tests |
-| T14 | Cert revocation propagates to invoke chain via l1Jti in L2 token (W4 scenario 3) | PR #5 merged `17927ef`, 72 tests |
+| T14 | Cert revocation: l1Jti token-bound (PR #5) + target cert check + re-HELLO regression (PR #7) | PR #5 `17927ef` + PR #7 `2c9a728`, 74 tests |
 
 ### AC Status: 12/12 ✅
 
@@ -139,11 +140,10 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 
 ### Handoff Notes
 
-- **T13 merged**: PR #4 on main (`caae326`) — SCOPE_DENIED explicit rejection
-- **Evidence**: 70 tests (45 hub + 25 node), biome clean, cross-family review (2 rounds)
-- **Plan C guardrails**: mTLS backfill done within deadline (2026-04-05)
-- **W4 progress**: scenario 2 (SCOPE_DENIED) complete, next T14 (cert revocation) + T15 (audit trace)
-- **Next step**: T14 emergency cert revocation → T15 audit replay → T12 quant bench
+- **T14 complete**: PR #5 (l1Jti) + PR #7 (target cert + re-HELLO regression) on main
+- **Evidence**: 74 tests (49 hub + 25 node), biome clean, cross-family review
+- **W4 progress**: scenarios 1-3 complete, T15 audit trace in review
+- **Next step**: T15 merge → T12 quant bench → W4 wrap-up
 
 ## Execution Decision (2026-03-31)
 
