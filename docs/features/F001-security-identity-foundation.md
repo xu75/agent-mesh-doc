@@ -111,6 +111,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | 2026-03-31 | T13 SCOPE_DENIED merged (PR #4) — explicit rejection + audit log, W4 scenario 2 |
 | 2026-03-31 | T14 cert revocation propagation merged (PR #5) — l1Jti in L2 token, 0ms propagation, W4 scenario 3 |
 | 2026-03-31 | T14 target cert revocation + re-HELLO regression merged (PR #7) — dual revocation check |
+| 2026-03-31 | T15 audit trace replay merged (PR #8) — AuditStore + GET /v1/audit/trace/:traceId, W4 scenario 4 |
 
 ## Phase Progress Summary (2026-03-31)
 
@@ -124,6 +125,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | T10 | mTLS transport layer (AC-7/AC-8) + MeshClient mTLS integration | PR #3 merged, 67 tests (42 hub + 25 node) |
 | T13 | SCOPE_DENIED explicit rejection on /v1/token + /v1/invoke (W4 scenario 2) | PR #4 merged `caae326`, 70 tests |
 | T14 | Cert revocation: l1Jti token-bound (PR #5) + target cert check + re-HELLO regression (PR #7) | PR #5 `17927ef` + PR #7 `2c9a728`, 74 tests |
+| T15 | Audit trace replay: AuditStore + GET /v1/audit/trace/:traceId (W4 scenario 4) | PR #8 merged `bf76af6`, 77 tests |
 
 ### AC Status: 12/12 ✅
 
@@ -133,17 +135,17 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 ### Open Items (遗留敞口)
 
 1. **T12 quantitative tests**: 1000-handshake benchmark (AC-7 already covered by mTLS test, may need separate E1 bench)
-2. ~~**T14 紧急证书撤销**~~ ✅ merged PR #5
-3. **T15 审计回放**: `GET /v1/audit/trace/:traceId` → 完整事件时间线 (W4 scenario 4)
+2. ~~**T14 紧急证书撤销**~~ ✅ merged PR #5 + PR #7
+3. ~~**T15 审计回放**~~ ✅ merged PR #8
 4. **STREAM mode**: not implemented, current INVOKE is request/response only
 5. **Hub response whitelist**: Hub assembles RESULT by spreading downstream response — should restrict allowed fields
 
 ### Handoff Notes
 
-- **T14 complete**: PR #5 (l1Jti) + PR #7 (target cert + re-HELLO regression) on main
-- **Evidence**: 74 tests (49 hub + 25 node), biome clean, cross-family review
-- **W4 progress**: scenarios 1-3 complete, T15 audit trace in review
-- **Next step**: T15 merge → T12 quant bench → W4 wrap-up
+- **W4 scenarios 1-4 complete**: all MVP verification scenarios merged
+- **Evidence**: 77 tests (51 hub + 26 node), biome clean, all cross-family reviewed
+- **Remaining**: T12 quantitative bench (1000-handshake perf test)
+- **Next step**: T12 → W4 wrap-up → Phase 2 readiness assessment
 
 ## Execution Decision (2026-03-31)
 
