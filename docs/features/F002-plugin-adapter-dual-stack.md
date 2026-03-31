@@ -8,7 +8,7 @@ created: 2026-03-31
 
 # F002: Plugin Adapter Dual-Stack (Clowder/OpenClaw)
 
-> Status: in-progress | Owner: 砚砚
+> Status: complete | Owner: 砚砚
 
 ## Why
 
@@ -56,9 +56,24 @@ Phase 2 的异构 Runtime 接入需要先有一个稳定的语义桥接层。我
 - [x] AC-2: `OpenClawPluginAdapter` 能正确完成能力/调用/结果/标识映射
 - [x] AC-3: OpenClaw target `catId` 非 `openclaw:` 前缀时明确拒绝
 - [x] AC-4: 适配器行为有自动化测试覆盖（`plugin-adapter.test.ts`）
+- [x] AC-5: Hub-side adapter registration endpoint (`POST /v1/adapters/register`)
+
+## Timeline
+
+| Date | Event |
+|------|-------|
+| 2026-03-31 | F002 kickoff — Plugin Adapter dual-stack |
+| 2026-03-31 | Adapter package merged (PR #10, `cfdc94a`) — AC 1-4 |
+| 2026-03-31 | Hub registration endpoint merged (PR #11, `5e32148`) — AC-5 |
+
+## Evidence
+
+- 92 tests (64 hub + 26 node + 2 adapter), all passing
+- Cross-family review: @opus approved both PRs
 
 ## Deferred
 
 1. 多租户前缀策略（当前固定 `openclaw:`）
 2. Runtime 版本协商与向后兼容矩阵
 3. STREAM 模式语义映射
+4. OpenClaw e2e — adapter → Hub registration → real cross-node invoke
