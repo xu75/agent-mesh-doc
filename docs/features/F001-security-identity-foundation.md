@@ -106,8 +106,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 | 2026-03-30 | W1 identity foundation merged to main (T1-T7) |
 | 2026-03-31 | W2 HELLO client + CAPS endpoint merged (PR #1, T8/T9) |
 | 2026-03-31 | Plan C approved — skip mTLS, go W3 with guardrails |
-| 2026-03-31 | W3 INVOKE relay implemented (`616adc1`) |
-| 2026-03-31 | W3 security hardening Red→Green (`f05fa9e`, `9eb8c71`), pending final re-review |
+| 2026-03-31 | W3 INVOKE relay merged (PR #2, `fbd86ef`) — Hub A+ constraints + Node B local verification |
 
 ## Phase Progress Summary (2026-03-31)
 
@@ -117,7 +116,7 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 |------|-------------|----------|
 | W1 | L0 Ed25519 keypair, L1 Mesh Cert, L2 Invocation Token, jti replay/expiry/revocation, Hub skeleton | 38 hub + 13 node tests |
 | W2 | HELLO client, CAPS endpoint, L1/L2 type confusion P0 fix | PR #1 merged → `7b46c94` |
-| W3 | INVOKE relay + security hardening (scope enforcement, Node B local verify, fail-closed) | commits `616adc1` + `f05fa9e` + `9eb8c71`, 61 tests (38 hub + 23 node), pending final @codex re-review |
+| W3 | INVOKE relay + security hardening (scope enforcement, Node B local verify, fail-closed) | PR #2 merged → `fbd86ef`, 61 tests (38 hub + 23 node) |
 
 ### AC Status: 10/12
 
@@ -127,17 +126,15 @@ Agent Mesh 的一切跨节点交互都建立在身份与安全之上。没有可
 
 ### Open Items (遗留敞口)
 
-1. **W3 final re-review + merge-gate pending**: `feat/w3-invoke` 已完成两轮 Red→Green 修复，等待 @codex 最终放行后开 PR #2 合入
-2. **T10 mTLS**: Plan C guardrail requires completion within ≤5 days after first e2e success
-3. **T12 quantitative tests**: 1000-handshake benchmark not yet run
-4. **STREAM mode**: not implemented, current INVOKE is request/response only
+1. **T10 mTLS**: Plan C guardrail requires completion within ≤5 days after first e2e success (deadline: 2026-04-05)
+2. **T12 quantitative tests**: 1000-handshake benchmark not yet run
+3. **STREAM mode**: not implemented, current INVOKE is request/response only
 
 ### Handoff Notes
 
-- **Worktree**: `/Users/xujinsong/VSCode/SynologyDrive/agent-mesh-w3-invoke` on branch `feat/w3-invoke`
-- **Build/test**: `pnpm build` clean, 61/61 tests pass, biome clean
-- **Next step**: @codex final re-review → receive-review → merge-gate → PR #2
-- **After merge**: backfill T10 (mTLS) + T12 (quant tests) per Plan C guardrails
+- **W3 merged**: PR #2 → `fbd86ef` on main
+- **Evidence**: 61 tests (38 hub + 23 node), biome clean, 2-round cross-family review
+- **Next step**: backfill T10 (mTLS) + T12 (quant tests) per Plan C guardrails
 
 ## Execution Decision (2026-03-31)
 
