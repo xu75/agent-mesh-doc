@@ -2,55 +2,60 @@
 
 Agent Mesh is an open interoperability platform for AI agents.
 
-It is not bound to any single runtime (including Clowder-AI). Clowder-AI can be one integrator, but the mesh is designed as a public platform that any agent system can join.
+It is runtime-agnostic: Clowder-AI is one integrator, not a hard dependency.  
+The mesh exposes one shared security and protocol baseline for heterogeneous agent runtimes.
 
 ## Positioning
 
-- Runtime-agnostic: connect different agent stacks through one security and protocol baseline.
-- Security-first: three-layer identity (L0/L1/L2), mTLS, replay protection.
-- Evolvable topology: start Hub-and-Spoke, then move toward federation.
+- Runtime-agnostic interoperability
+- Security-first execution path (L0/L1/L2 identity + revocation + replay guard + mTLS)
+- Evolvable topology (Hub-and-Spoke start, federation target)
 
-## Integration Model
+## Current MVP Status (2026-04-01)
 
-Any agent runtime can join via either path:
+MVP foundation is implemented and runnable.
 
-| Path | Description | Current Stage |
-|------|-------------|---------------|
-| Plugin Adapter | Implement a plugin/adapter that maps local runtime semantics to Agent Mesh protocol and identity flow. | In progress (`@agent-mesh/adapter`: Clowder/OpenClaw) |
-| Native Protocol | Implement the open protocol directly (HELLO/CAPS/INVOKE/STREAM/RESULT/ERROR + identity token model). | In progress |
+| Feature | Status | Notes |
+|---------|--------|-------|
+| F001 Security & Identity | complete | L0/L1/L2 + mTLS + revoke + replay guard |
+| F002 Plugin Adapter | complete | Clowder/OpenClaw adapter + Hub registration endpoint |
+| F003 Capability Model | complete | multi-capability + CAPS filtering + adapter alignment |
+| F004 Node Liveness | complete | heartbeat + online/stale/offline + offline invoke guard |
+| F005 Developer Experience | complete | hello-world + two-node-chat + startup banner + quick start |
+| F006 Observability | complete | structured logs + metrics + trace correlation |
+| F007 Runtime Bridge | spec | next-phase runtime dispatch bridge |
+| F008 Graceful Lifecycle | spec | next-phase reliability lifecycle |
+| F009 L2 Token Extension | spec | next-phase token model extension |
 
-## Quick Start
+## MVP Practical Run
 
-Get from clone to your first cross-node invocation in 3 steps:
+Use the runbook:
+- [MVP Practical Runbook](docs/discussions/2026-04-01-mvp-practical-runbook.md)
+
+Fast path:
 
 ```bash
-# 1. Install dependencies
 pnpm install
-
-# 2. Build all packages
 pnpm build
-
-# 3. Run the hello-world example
 node examples/hello-world/dist/run.js
-```
-
-You'll see two nodes register with Hub, discover each other's capabilities, and perform a remote invocation — all with full identity verification (L0/L1/L2).
-
-For a bidirectional chat example:
-
-```bash
 node examples/two-node-chat/dist/run.js
 ```
 
-## Status (2026-04-01)
+## Architecture Decision
 
-**Phase: Wave 1 complete, Wave 2 in progress**
+- [Mesh Hub MVP Communication Architecture](docs/decisions/2026-04-01-mesh-hub-mvp-communication-architecture.md)
+  - MVP: pure Hub Relay
+  - Future: Hub governance + optional direct data path
+  - Not selected for MVP: pure P2P topology
 
-| Wave | Features | Status |
-|------|----------|--------|
-| Wave 1 | F001 Security, F002 Adapter, F003 Capabilities, F004 Liveness, F006 Observability | done |
-| Wave 2 | F005 Developer Experience | in-progress |
-| Wave 3 | F007 Runtime Bridge, F008 Lifecycle, F009 L2 Extension | spec |
+## Integration Model
+
+Any runtime can join via either path:
+
+| Path | Description | Current Stage |
+|------|-------------|---------------|
+| Plugin Adapter | Map runtime semantics to Mesh protocol and identity flow | complete for Clowder/OpenClaw (`@agent-mesh/adapter`) |
+| Native Protocol | Implement protocol directly (HELLO/CAPS/INVOKE/RESULT/ERROR + identity model) | available |
 
 ## Repository Layout
 
@@ -61,10 +66,12 @@ packages/
   mesh-node/      Node SDK (MeshClient + MeshServer)
   mesh-protocol/  Shared protocol and identity definitions
 examples/
-  hello-world/    Minimal echo invocation (5-minute onboarding)
-  two-node-chat/  Bidirectional invocation between two nodes
+  hello-world/    Minimal echo invocation
+  two-node-chat/  Bidirectional invocation demo
 docs/
   features/       Feature specs and acceptance criteria
+  decisions/      Architecture decisions
+  discussions/    MVP runbook and discussion artifacts
 ```
 
 ## Local Development
@@ -90,36 +97,16 @@ Health check:
 curl http://127.0.0.1:3004/health
 ```
 
-## Scope (Current MVP Stage)
-
-In scope now:
-- W1-W2 security and identity foundation (E1/E2 gate).
-
-Out of scope now:
-- Trading/token economics.
-- Large-scale open admission.
-
-## 12-Week Blueprint
-
-| Period | Goal | Exit Criteria |
-|--------|------|---------------|
-| W1-W2 | Security & Identity foundation | E1/E2 pass; handshake >= 99.5%; replay block 100% |
-| W3-W4 | Protocol & first cross-node call | First e2e success; 500 schema drift = 0 |
-| W5-W6 | P0 guardrails & audit replay | Token revoke <= 5s; node revoke <= 60s; trace 100% |
-| W7-W8 | Routing & governance integration | E5/E6/E7 pass; remote @mention >= 95% |
-| W9-W10 | Small-scale external pilot | 14 days zero P0; cross-node >= 95% |
-| W11-W12 | Beta convergence & Go/No-Go | 4 acceptance scenarios pass |
-
-Hard stop at W6: if any metric fails, fall back to single-node enhancement.
-
 ## Source of Truth
 
-- [README](README.md) for project entry.
-- [20-round debate](docs/debate-20r.md) for architecture reasoning.
-- [F001 spec](docs/features/F001-security-identity-foundation.md) for current implementation contract and AC.
-- [F002 spec](docs/features/F002-plugin-adapter-dual-stack.md) for dual-stack adapter contract.
-- [BACKLOG](BACKLOG.md) for active feature tracking.
+- [README](README.md)
+- [BACKLOG](BACKLOG.md)
+- [MVP runbook](docs/discussions/2026-04-01-mvp-practical-runbook.md)
+- [MVP communication architecture decision](docs/decisions/2026-04-01-mesh-hub-mvp-communication-architecture.md)
+- [20-round debate notes](docs/debate-20r.md)
+- [F001 spec](docs/features/F001-security-identity-foundation.md)
+- [F002 spec](docs/features/F002-plugin-adapter-dual-stack.md)
 
 ## Related
 
-- [Clowder-AI](https://github.com/xu75/Clowder-AI): one potential runtime integration target, not a hard dependency of Agent Mesh.
+- [Clowder-AI](https://github.com/xu75/Clowder-AI)

@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F003: Capability Model Refactor
 
-> Status: spec | Owner: TBD
+> Status: complete | Owner: 宪宪
 
 ## Why
 
@@ -24,29 +24,28 @@ Current Hub assumes one-node-one-catId (config.ts AllowedNode has single `catId`
 
 ## Acceptance Criteria
 
-- [ ] AC-1: A node can register with multiple catId/skills via config
-- [ ] AC-2: A node can register with multiple catId/skills via adapter endpoint
-- [ ] AC-3: `GET /v1/caps` returns all capabilities across all nodes
-- [ ] AC-4: `POST /v1/caps` with `{catId: "codex"}` returns only nodes hosting codex
-- [ ] AC-5: `POST /v1/caps` with `{skill: "review"}` returns only nodes with review skill
-- [ ] AC-6: adapterByNode data is reflected in CAPS responses
-- [ ] AC-7: Backward compat: single catId+skills config still works
-- [ ] AC-8: All existing tests pass (no regression)
+- [x] AC-1: A node can register with multiple catId/skills via config
+- [x] AC-2: A node can register with multiple catId/skills via adapter endpoint
+- [x] AC-3: `GET /v1/caps` returns all capabilities across all nodes
+- [x] AC-4: `POST /v1/caps` with `{catId: "codex"}` returns only nodes hosting codex
+- [x] AC-5: `POST /v1/caps` with `{skill: "review"}` returns only nodes with review skill
+- [x] AC-6: adapterByNode data is reflected in CAPS responses
+- [x] AC-7: Backward compat: single catId+skills config still works
+- [x] AC-8: All existing tests pass (no regression)
 
-## Dependencies
+## Timeline
 
-None (foundational change)
+| Date | Event |
+|------|-------|
+| 2026-04-01 | F003 merged to main (`240864d`) — multi-capability model + CAPS filtering + adapter alignment |
 
-## Risk
+## Evidence
 
-- Config schema change may affect deployed Hub instances (mitigated by backward compat)
-- CAPS response shape change may break existing clients (version or additive change)
+- Code path: `resolveCapabilities()` + per-capability CAPS flattening in `packages/mesh-hub/src/hub.ts`
+- Test suite: `packages/mesh-hub/src/capability-model.test.ts` (14 tests)
+- Verified on 2026-04-01: `pnpm --filter @agent-mesh/hub exec node --test dist/capability-model.test.js` → pass
 
-## Open Questions
+## Deferred
 
-- Should capabilities be mutable at runtime (re-register to update)?
-- Scope policy: per-node or per-capability?
-
-## Discussion Source
-
-Round 1: codex (adapterByNode write-only), gpt52 (data model mismatch), opus (CAPS filtering)
+1. Runtime capability mutation policy（是否允许热更新）
+2. Scope policy粒度（per-node vs per-capability）

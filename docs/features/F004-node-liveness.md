@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F004: Node Liveness
 
-> Status: spec | Owner: TBD
+> Status: complete | Owner: 宪宪
 
 ## Why
 
@@ -26,22 +26,25 @@ CAPS currently reports all allowlisted nodes as "online" regardless of actual st
 
 ## Acceptance Criteria
 
-- [ ] AC-1: Node sends heartbeat, Hub records last-seen timestamp
-- [ ] AC-2: CAPS returns accurate status (online/stale/offline)
-- [ ] AC-3: Node that stops heartbeating transitions to stale then offline
-- [ ] AC-4: INVOKE to offline node returns NODE_OFFLINE (not 10s timeout)
-- [ ] AC-5: Heartbeat interval and thresholds are configurable
-- [ ] AC-6: Heartbeat requires valid L1 certificate (no unauthenticated keep-alive)
+- [x] AC-1: Node sends heartbeat, Hub records last-seen timestamp
+- [x] AC-2: CAPS returns accurate status (online/stale/offline)
+- [x] AC-3: Node that stops heartbeating transitions to stale then offline
+- [x] AC-4: INVOKE to offline node returns NODE_OFFLINE (not 10s timeout)
+- [x] AC-5: Heartbeat interval and thresholds are configurable
+- [x] AC-6: Heartbeat requires valid L1 certificate (no unauthenticated keep-alive)
 
-## Dependencies
+## Timeline
 
-None (can parallel with F003)
+| Date | Event |
+|------|-------|
+| 2026-04-01 | F004 merged to main (`e02f236`) — heartbeat + status derivation + offline invoke guard |
 
-## Risk
+## Evidence
 
-- Heartbeat interval too aggressive = unnecessary traffic; too lax = stale detection lag
-- Timer cleanup on Hub shutdown
+- Code path: `/v1/heartbeat`, `deriveNodeStatus()`, `/v1/invoke` offline guard in `packages/mesh-hub/src/hub.ts`
+- Test suite: `packages/mesh-hub/src/node-liveness.test.ts` (10 tests)
+- Verified on 2026-04-01: `pnpm --filter @agent-mesh/hub exec node --test dist/node-liveness.test.js` → pass
 
-## Open Questions
+## Deferred
 
-- Should heartbeat carry capability updates (dynamic re-registration)?
+1. Capability update through heartbeat payload（目前仍通过 adapter register 管理）

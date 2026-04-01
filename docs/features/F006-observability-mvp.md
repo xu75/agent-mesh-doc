@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F006: Observability MVP
 
-> Status: spec | Owner: TBD
+> Status: complete | Owner: 宪宪
 
 ## Why
 
@@ -27,22 +27,25 @@ Hub currently uses plain console.log with no structure, no log levels, no reques
 
 ## Acceptance Criteria
 
-- [ ] AC-1: All Hub log output is structured JSON with timestamp, level, traceId
-- [ ] AC-2: LOG_LEVEL env var controls verbosity
-- [ ] AC-3: `GET /v1/metrics` returns invocation counts, error counts, latency percentiles
-- [ ] AC-4: Cross-request correlation: same traceId appears in TOKEN, INVOKE, and AUDIT logs
-- [ ] AC-5: pino integrated with Fastify (not a separate logger)
+- [x] AC-1: All Hub log output is structured JSON with timestamp, level, traceId
+- [x] AC-2: LOG_LEVEL env var controls verbosity
+- [x] AC-3: `GET /v1/metrics` returns invocation counts, error counts, latency percentiles
+- [x] AC-4: Cross-request correlation: same traceId appears in TOKEN, INVOKE, and AUDIT logs
+- [x] AC-5: pino integrated with Fastify (not a separate logger)
 
-## Dependencies
+## Timeline
 
-None (independent)
+| Date | Event |
+|------|-------|
+| 2026-04-01 | F006 merged to main (`91888c5`) — structured logs + metrics + trace correlation |
 
-## Risk
+## Evidence
 
-- pino adds a dependency (but it's Fastify's default logger, minimal risk)
-- Metrics endpoint without auth could leak operational info (add adminToken guard?)
+- Code path: `MetricsCollector`, `/v1/metrics`, TOKEN/INVOKE trace logging in `packages/mesh-hub/src/hub.ts`
+- Test suite: `packages/mesh-hub/src/observability.test.ts` (6 tests)
+- Verified on 2026-04-01: `pnpm --filter @agent-mesh/hub exec node --test dist/observability.test.js` → pass
 
-## Open Questions
+## Deferred
 
-- Prometheus format vs JSON for /v1/metrics?
-- Should metrics be opt-in (separate config flag)?
+1. Metrics auth策略（是否对 `/v1/metrics` 增加保护）
+2. Prometheus/OpenTelemetry 导出格式（当前仅 JSON）

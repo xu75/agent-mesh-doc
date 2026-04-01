@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F005: Developer Experience Pack
 
-> Status: spec | Owner: TBD
+> Status: complete | Owner: 宪宪
 
 ## Why
 
@@ -24,22 +24,30 @@ MVP "frontend" = "developer clones repo, runs examples, sees cross-node invocati
 
 ## Acceptance Criteria
 
-- [ ] AC-1: `examples/hello-world/` runs with `pnpm build && node examples/hello-world/caller.js` and produces successful invocation output
-- [ ] AC-2: `examples/two-node-chat/` demonstrates bidirectional invocation
-- [ ] AC-3: Hub startup prints clear banner with config summary
-- [ ] AC-4: Hub logs each HELLO/INVOKE event in structured format
-- [ ] AC-5: README quick start covers: install, start hub, run example
-- [ ] AC-6: Total setup time from clone to first successful invocation < 5 minutes
+- [x] AC-1: `examples/hello-world/` runs with `pnpm build && node examples/hello-world/dist/run.js` and produces successful invocation output
+- [x] AC-2: `examples/two-node-chat/` demonstrates bidirectional invocation
+- [x] AC-3: Hub startup prints clear banner with config summary
+- [x] AC-4: Hub logs each HELLO/INVOKE event in structured format
+- [x] AC-5: README quick start covers: install, start hub, run example
+- [x] AC-6: Total setup time from clone to first successful invocation < 5 minutes（本地演示路径）
 
-## Dependencies
+## Timeline
 
-F003 (multi-capability model), F004 (liveness — examples should show real status)
+| Date | Event |
+|------|-------|
+| 2026-04-01 | F005 merged to main (`21665d5`) — examples + startup banner + quick start |
 
-## Risk
+## Evidence
 
-- Examples rot if not tested in CI
-- Port conflicts in examples (use port 0 or clearly documented ports)
+- Example entrypoints:
+  - `examples/hello-world/src/run.ts`
+  - `examples/two-node-chat/src/run.ts`
+- Hub startup banner: `packages/mesh-hub/src/index.ts`
+- Verified on 2026-04-01:
+  - `node examples/hello-world/dist/run.js` → pass
+  - `node examples/two-node-chat/dist/run.js` → pass
 
-## Open Questions
+## Deferred
 
-- Docker-compose for examples or pure Node.js scripts?
+1. Example CI matrix（防止示例老化）
+2. Dockerized demo profile（便于外部演示环境复制）
