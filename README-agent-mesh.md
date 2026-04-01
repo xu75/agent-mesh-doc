@@ -3,7 +3,8 @@
 Agent Mesh is an open interoperability platform for AI agents.
 
 It is runtime-agnostic: Clowder-AI is one integrator, not a hard dependency.  
-The mesh exposes one shared security and protocol baseline for heterogeneous agent runtimes.
+The mesh exposes one shared security and protocol baseline for heterogeneous agent runtimes.  
+Any plugin-capable agent runtime can integrate with low adaptation cost.
 
 ## Positioning
 
@@ -57,6 +58,23 @@ Any runtime can join via either path:
 | Plugin Adapter | Map runtime semantics to Mesh protocol and identity flow | complete for Clowder/OpenClaw (`@agent-mesh/adapter`) |
 | Native Protocol | Implement protocol directly (HELLO/CAPS/INVOKE/RESULT/ERROR + identity model) | available |
 
+## Application Scenarios (MVP)
+
+- Team capability sharing: expose local models, internal APIs, and automation workflows (for example coding-plan pipelines) through Hub registration so other agents in the team can reuse them with scope control.
+- Cross-runtime collaboration: let heterogeneous runtimes invoke each other through one protocol and one identity baseline without per-pair custom integration.
+- Secure tool relay: centralize authn/authz, replay guard, revocation, and audit trail in Hub so invocation evidence is queryable and governance-ready.
+- Incremental rollout: start from Hub Relay in controlled environments, then scale scenarios without replacing protocol or identity foundations.
+
+MVP execution path remains Hub Relay (`Agent A -> Hub -> Agent B`) to preserve synchronous enforcement and full-path auditability.
+
+## Phase 2 Explorations (Not MVP Commitments)
+
+- OpenRouter-like multi-node capability exchange with richer routing and quota policies.
+- Optional direct data path (P2P-style) under Hub governance, while keeping Hub as control plane for identity, policy, and revocation.
+- Optional decentralized settlement/reputation mechanisms (including blockchain-based designs) after MVP value and threat models are validated in production-like runs.
+
+These are roadmap explorations, not current delivery commitments.
+
 ## Repository Layout
 
 ```text
@@ -104,9 +122,9 @@ curl http://127.0.0.1:3004/health
 - [MVP runbook](docs/discussions/2026-04-01-mvp-practical-runbook.md)
 - [MVP communication architecture decision](docs/decisions/2026-04-01-mesh-hub-mvp-communication-architecture.md)
 - [20-round debate notes](docs/debate-20r.md)
-- [F001 spec](docs/features/F001-security-identity-foundation.md)
-- [F002 spec](docs/features/F002-plugin-adapter-dual-stack.md)
+- [Feature specs directory (F001-F009)](docs/features/)
 
 ## Related
 
 - [Clowder-AI](https://github.com/xu75/Clowder-AI)
+- OpenClaw (integrated via Plugin Adapter path)
