@@ -19,31 +19,51 @@ Any agent runtime can join via either path:
 | Plugin Adapter | Implement a plugin/adapter that maps local runtime semantics to Agent Mesh protocol and identity flow. | In progress (`@agent-mesh/adapter`: Clowder/OpenClaw) |
 | Native Protocol | Implement the open protocol directly (HELLO/CAPS/INVOKE/STREAM/RESULT/ERROR + identity token model). | In progress |
 
-## Status (2026-03-30)
+## Quick Start
 
-**Phase: W1 in progress** (`F001: Security & Identity Foundation`)
+Get from clone to your first cross-node invocation in 3 steps:
 
-Completed in repository:
-- Monorepo scaffold and TypeScript workspace layout.
-- `@agent-mesh/protocol` type definitions for protocol messages, error codes, and identity claims.
-- `@agent-mesh/hub` skeleton with `/health`, `/v1/hello`, `/v1/caps`, `/v1/token` endpoints (stubbed for W1/W2 tasks).
+```bash
+# 1. Install dependencies
+pnpm install
 
-In progress:
-- L0 key generation + persistence.
-- L1 Mesh Certificate issuance/verification.
-- L2 Invocation Token issuance/verification.
-- jti replay detection and mTLS test coverage (E1/E2).
+# 2. Build all packages
+pnpm build
+
+# 3. Run the hello-world example
+node examples/hello-world/dist/run.js
+```
+
+You'll see two nodes register with Hub, discover each other's capabilities, and perform a remote invocation — all with full identity verification (L0/L1/L2).
+
+For a bidirectional chat example:
+
+```bash
+node examples/two-node-chat/dist/run.js
+```
+
+## Status (2026-04-01)
+
+**Phase: Wave 1 complete, Wave 2 in progress**
+
+| Wave | Features | Status |
+|------|----------|--------|
+| Wave 1 | F001 Security, F002 Adapter, F003 Capabilities, F004 Liveness, F006 Observability | done |
+| Wave 2 | F005 Developer Experience | in-progress |
+| Wave 3 | F007 Runtime Bridge, F008 Lifecycle, F009 L2 Extension | spec |
 
 ## Repository Layout
 
 ```text
 packages/
   mesh-adapter/   Runtime plugin adapter (Clowder/OpenClaw -> Mesh semantics)
-  mesh-hub/       Hub service (registration, issuance, revocation)
-  mesh-node/      Node SDK (placeholder in current phase)
+  mesh-hub/       Hub service (identity, routing, liveness, metrics)
+  mesh-node/      Node SDK (MeshClient + MeshServer)
   mesh-protocol/  Shared protocol and identity definitions
+examples/
+  hello-world/    Minimal echo invocation (5-minute onboarding)
+  two-node-chat/  Bidirectional invocation between two nodes
 docs/
-  debate-20r.md   20-round architecture debate record
   features/       Feature specs and acceptance criteria
 ```
 
