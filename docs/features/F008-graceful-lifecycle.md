@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F008: Graceful Lifecycle
 
-> Status: spec | Owner: TBD
+> Status: review | Owner: 宪宪
 
 ## Why
 
@@ -22,10 +22,10 @@ Hub currently has no config validation on startup (invalid config silently fails
 
 ## Acceptance Criteria
 
-- [ ] AC-1: Hub rejects startup with invalid config (missing hubId, missing adminToken, etc.) with actionable error message
-- [ ] AC-2: On SIGTERM, Hub stops accepting new requests (503) and waits for in-flight to complete
-- [ ] AC-3: Drain timeout is configurable (default 5s)
-- [ ] AC-4: `/health` reflects lifecycle state (starting/ok/draining)
+- [x] AC-1: Hub rejects startup with invalid config (missing hubId, missing adminToken, etc.) with actionable error message
+- [x] AC-2: On SIGTERM, Hub stops accepting new requests (503) and waits for in-flight to complete
+- [x] AC-3: Drain timeout is configurable (default 5s)
+- [x] AC-4: `/health` reflects lifecycle state (starting/ok/draining)
 
 ## Dependencies
 
