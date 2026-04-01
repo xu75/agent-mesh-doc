@@ -7,8 +7,9 @@ created: 2026-04-01
 
 # EP: Add Final Doc Consistency Pass (Without Mandatory Doc Reviewer Gate)
 
-> Status: proposed  
-> Owner: TBD
+> Status: approved (2026-04-01)  
+> Owner: 宪宪  
+> Implemented: feat-lifecycle SKILL.md Step 0.8
 
 ## Boundary (What This Proposal Is / Is Not)
 
@@ -114,10 +115,7 @@ Rollback criteria:
 1. Median pass time > 20 minutes for two consecutive pilot items.
 2. No measurable reduction in doc-level inconsistency issues.
 
-## Decision Needed
+## Decision
 
-CVO decision requested:
-
-1. Approve this as a lightweight process patch (recommended), or
-2. Keep current practice (discussion/design gate only, no explicit final consistency pass).
+CVO approved on 2026-04-01. Implemented as `feat-lifecycle` Step 0.8 (lightweight patch, not a new gate).
 
