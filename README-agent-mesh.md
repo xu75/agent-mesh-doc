@@ -6,11 +6,33 @@ It is runtime-agnostic: Clowder-AI is one integrator, not a hard dependency.
 The mesh exposes one shared security and protocol baseline for heterogeneous agent runtimes.  
 Any plugin-capable agent runtime can integrate with low adaptation cost.
 
+## Vision
+
+Build a general interoperability foundation for agents:
+
+- Runtime-neutral by design: Clowder/OpenClaw are reference integrations, not product boundaries.
+- Standardize cross-agent collaboration: replace pairwise custom integrations with one shared protocol and identity baseline.
+- Governability first: every invocation path is enforceable and auditable (authn, authz, revoke, replay guard, traceability).
+- Practical first, then scale: MVP prioritizes secure and reliable collaboration over peak throughput optimization.
+- Capability network long-term: local models, internal APIs, and automation workflows can be shared safely across team agents.
+
 ## Positioning
 
 - Runtime-agnostic interoperability
 - Security-first execution path (L0/L1/L2 identity + revocation + replay guard + mTLS)
 - Evolvable topology (Hub-and-Spoke start, federation target)
+
+## MVP Success Criteria
+
+- Two heterogeneous plugin-capable runtimes can integrate with low adaptation cost and complete cross-runtime invoke flows.
+- Invocation paths are policy-enforced and evidence-backed (scope, revoke, replay guard, audit trail).
+- Team-shared capabilities (local model, internal API, workflow pipeline) can be registered and consumed under scope control.
+
+## Non-Goals (MVP)
+
+- No commitment to decentralized settlement or on-chain reputation.
+- No commitment to replacing Hub governance with pure P2P data paths.
+- No commitment to throughput-first optimization as MVP acceptance criteria.
 
 ## Current MVP Status (2026-04-01)
 
