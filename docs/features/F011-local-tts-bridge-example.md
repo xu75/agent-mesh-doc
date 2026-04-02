@@ -35,6 +35,7 @@ created: 2026-04-02
 - `packages/bridge-tts/` 不扩展 `packages/mesh-bridge` 的 Clowder-first 语义组合层
 - `bridges/qwen3-tts/` 不承载 Mesh 协议逻辑，只暴露本地 HTTP 推理端点
 - 两层之间通过本地 HTTP 调用（`bridge-tts -> qwen3-tts`），不是 Mesh 协议互调
+- 本 feature 采用 **BYO Runtime**：默认前提是本地 Qwen3-TTS 服务已安装并可运行，agent-mesh 不负责模型安装
 
 ## Scope
 
@@ -47,6 +48,7 @@ Out of scope:
 - 多音色市场化能力编排
 - 流式音频分片
 - 第三方账单计费系统
+- 模型权重下载、CUDA/驱动安装、conda/venv 环境初始化
 
 ## Acceptance Criteria
 
