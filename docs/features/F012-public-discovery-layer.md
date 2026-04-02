@@ -159,8 +159,8 @@ created: 2026-04-02
 
 1. ~~A2A `/.well-known/agent-card.json` 是否 Phase 1？~~ → **已决定：Phase 3**（两猫一致 + 铲屎官拍板）
 2. ~~`registration.mode` 写 "open" 还是 "whitelist"？~~ → **已决定：写 "whitelist"**（诚实反映现状）
-3. `/v1/directory` 的 `description` 字段数据来源？需要在 hub config 的 `allowedNodes` 中新增字段，还是从 adapter 注册时携带？
-4. Landing Page 是否需要中英双语？
+3. ~~`/v1/directory` 的 `description` 字段数据来源？~~ → **已决定：Phase 1 走 hub config 可选字段，缺省不返回**（GPT-5.4 建议，后续再讨论 adapter 注册覆盖）
+4. ~~Landing Page 是否需要中英双语？~~ → **已决定：Phase 1 单语（英文），双语留后续迭代**（GPT-5.4 建议，不把 UI 文案工程化问题带进主线）
 
 ## Key Decisions
 
@@ -171,3 +171,5 @@ created: 2026-04-02
 | D3 | `registration.mode: "whitelist"` | 代码事实是 allowlist，文档不能说 open | GPT-5.4 提出 |
 | D4 | 先开放，安全未来再收 | 铲屎官拍板 | 铲屎官 |
 | D5 | 不含 hubId | Agent 已知 URL，多 hub 联邦是 hub 间的事 | 铲屎官提出 |
+| D6 | `description` Phase 1 走 config 可选字段 | 简单起步，adapter 覆盖留后续 | GPT-5.4 建议 |
+| D7 | Landing Page Phase 1 单语（英文） | 不把文案工程化带进 discovery 主线 | GPT-5.4 建议 |
