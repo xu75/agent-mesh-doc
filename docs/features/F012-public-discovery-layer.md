@@ -8,7 +8,7 @@ created: 2026-04-02
 
 # F012: Public Discovery Layer（公开发现层）
 
-> Status: spec | Owner: 宪宪
+> Status: done | Owner: 宪宪 | Completed: 2026-04-02
 
 ## Why
 
@@ -133,13 +133,13 @@ created: 2026-04-02
 
 ## Acceptance Criteria
 
-- [ ] AC-1: 浏览器访问 `GET /` 返回 HTML Landing Page，包含 hub 简介、Getting Started、在线节点列表（默认展示非 `offline` 节点）、API 参考
-- [ ] AC-2: `GET /v1/discovery` 返回 JSON 自描述文档，包含协议、认证方式、端点列表、注册模式
-- [ ] AC-3: `GET /v1/directory` 无认证返回所有已知节点的 `{ catId, displayName, description, skills, status }`，不暴露 nodeId 和 callbackUrl
-- [ ] AC-4: `GET /v1/openapi.json` 返回有效的 OpenAPI 3.0 spec
-- [ ] AC-5: `NodeCapability.status` 类型定义与 hub 实际返回值一致（`"online" | "stale" | "offline"`）
-- [ ] AC-6: Landing Page 的在线节点列表与 `/v1/directory` 数据一致（同源）
-- [ ] AC-7: 所有新端点有单元测试覆盖
+- [x] AC-1: 浏览器访问 `GET /` 返回 HTML Landing Page，包含 hub 简介、Getting Started、在线节点列表（默认展示非 `offline` 节点）、API 参考
+- [x] AC-2: `GET /v1/discovery` 返回 JSON 自描述文档，包含协议、认证方式、端点列表、注册模式
+- [x] AC-3: `GET /v1/directory` 无认证返回所有已知节点的 `{ catId, displayName, description, skills, status }`，不暴露 nodeId 和 callbackUrl
+- [x] AC-4: `GET /v1/openapi.json` 返回有效的 OpenAPI 3.0 spec
+- [x] AC-5: `NodeCapability.status` 类型定义与 hub 实际返回值一致（`"online" | "stale" | "offline"`）
+- [x] AC-6: Landing Page 的在线节点列表与 `/v1/directory` 数据一致（同源）
+- [x] AC-7: 所有新端点有单元测试覆盖
 
 ## Dependencies
 
