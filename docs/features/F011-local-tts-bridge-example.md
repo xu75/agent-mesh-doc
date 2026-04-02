@@ -27,9 +27,14 @@ created: 2026-04-02
 
 目标产物分三层：
 
-1. `packages/`：可发布桥接能力包（TTS invoke contract + bridge lifecycle wiring）
-2. `bridges/`：本地 TTS 运行时包装层（进程/配置/启动脚本）
+1. `packages/bridge-tts/`：可发布桥接能力包（TTS invoke contract + Mesh 注册/心跳/handler 生命周期）
+2. `bridges/qwen3-tts/`：本地 TTS 运行时包装层（Python 进程、依赖管理、启动脚本、配置）
 3. `examples/`：最小调用演示（含调用命令与验收步骤）
+
+边界约束：
+- `packages/bridge-tts/` 不扩展 `packages/mesh-bridge` 的 Clowder-first 语义组合层
+- `bridges/qwen3-tts/` 不承载 Mesh 协议逻辑，只暴露本地 HTTP 推理端点
+- 两层之间通过本地 HTTP 调用（`bridge-tts -> qwen3-tts`），不是 Mesh 协议互调
 
 ## Scope
 
@@ -45,7 +50,7 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- [ ] AC-1: Hub `CAPS` 可见 `tts.synthesize`，并能稳定显示在线状态。
+- [ ] AC-1: `bridge-tts` 通过标准 `HELLO + heartbeat` 路径完成注册，Hub `CAPS` 可见 `tts.synthesize` 且状态在线。
 - [ ] AC-2: 远端 Agent 通过 mesh invoke 成功拿到可播放音频结果（URL 或 base64）。
 - [ ] AC-3: scope 不足时返回可审计拒绝事件（非 500，语义化错误码）。
 - [ ] AC-4: 端到端 traceId 可追踪（caller/hub/bridge/runtime 全链路可对齐）。
@@ -53,9 +58,21 @@ Out of scope:
 
 ## Dependencies
 
-- F010（Mesh-Cat Cafe Integration）提供实战调用链和 sidecar 经验
 - F002（Plugin Adapter）提供 runtime 语义映射基础
 - F004（Node Liveness）提供在线状态语义
+
+参考（非阻塞）：
+- F010（Mesh-Cat Cafe Integration）提供实战调用链和 sidecar 经验
+
+## Registration Path
+
+本 feature 采用 **标准节点路径**：
+
+- `HELLO` 完成身份握手与注册
+- `heartbeat` 维持 liveness
+- `INVOKE` handler 调用本地 `qwen3-tts` HTTP 推理接口
+
+不采用 `/v1/adapters/register` 作为主注册路径。
 
 ## Risk
 
@@ -76,4 +93,3 @@ Out of scope:
 - [ ] AC 是否都可通过日志/输出/命令复现实证？
 - [ ] 安全边界（scope/revoke/audit）是否有明确验收条目？
 - [ ] 示例是否足够小（5 分钟内可跑通）？
-
