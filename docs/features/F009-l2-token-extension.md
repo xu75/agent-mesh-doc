@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F009: L2 Token Extension
 
-> Status: spec | Owner: TBD
+> Status: complete | Owner: 宪宪
 
 ## Why
 
@@ -22,10 +22,10 @@ L2 invocation token currently has `aud: targetNodeId` but no cat/skill-level tar
 
 ## Acceptance Criteria
 
-- [ ] AC-1: TOKEN request with targetCatId produces L2 with matching claim
-- [ ] AC-2: INVOKE with targetCatId-bearing token routes to correct cat on target node
-- [ ] AC-3: TOKEN request without targetCatId works as before (backward compat)
-- [ ] AC-4: Node B can verify targetCatId in L2 token locally
+- [x] AC-1: TOKEN request with targetCatId produces L2 with matching claim
+- [x] AC-2: INVOKE with targetCatId-bearing token routes to correct cat on target node
+- [x] AC-3: TOKEN request without targetCatId works as before (backward compat)
+- [x] AC-4: Node B can verify targetCatId in L2 token locally
 
 ## Dependencies
 
