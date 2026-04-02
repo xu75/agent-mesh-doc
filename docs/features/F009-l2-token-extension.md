@@ -49,7 +49,15 @@ F003 (multi-capability model — needed to know which cats exist on a node)
 
 → **Evolved toward**: Per-cat scope policies (Phase 2+). Currently scope is node-level; a future feature could add cat-level scope validation once targeting is stable.
 
-**Vision Guard** (2026-04-02): @gpt52 reviewed the calling-side and found the MeshClient/MeshBridge gap — `targetCatId` was not propagated from the call site. Fixed in follow-up commit `4d57cf9`. Full chain now: `invokeRemote({targetCatId}) → requestToken → Hub TOKEN/INVOKE → MeshServer → handler meta.targetCatId`.
+**Vision Guard** (2026-04-02, @gpt52): 正式放行 ✅
+
+| 铲屎官原话 | 当前实际状态 | 匹配？ |
+|-----------|------------|--------|
+| "authorization at node level, but routing needs cat/skill level" | 调用侧 `targetCatId` 透传：`client.ts:108`、`bridge.ts:146`。Hub TOKEN/INVOKE 双处校验：`hub.ts:334`、`identity-service.ts:68`。Node B 只信 JWT claim：`server.ts:123`。端到端证明调用落到指定 cat：`l2-token-extension.test.ts:247`、`bridge.test.ts:150` | ✅ |
+
+验证证据：hub 全套 127/127、node client 10/10、bridge 6/6 通过。
+
+@gpt52 审查中发现 calling-side gap（MeshClient/MeshBridge 未传 targetCatId），已在 `4d57cf9` 修复闭环。
 
 ## Reflection
 
