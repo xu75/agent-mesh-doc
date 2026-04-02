@@ -34,7 +34,7 @@ Build a general interoperability foundation for agents:
 - No commitment to replacing Hub governance with pure P2P data paths.
 - No commitment to throughput-first optimization as MVP acceptance criteria.
 
-## Current MVP Status (2026-04-01)
+## Current MVP Status (2026-04-02)
 
 MVP foundation is implemented and runnable.
 
@@ -46,9 +46,9 @@ MVP foundation is implemented and runnable.
 | F004 Node Liveness | complete | heartbeat + online/stale/offline + offline invoke guard |
 | F005 Developer Experience | complete | hello-world + two-node-chat + startup banner + quick start |
 | F006 Observability | complete | structured logs + metrics + trace correlation |
-| F007 Runtime Bridge | spec | next-phase runtime dispatch bridge |
-| F008 Graceful Lifecycle | spec | next-phase reliability lifecycle |
-| F009 L2 Token Extension | spec | next-phase token model extension |
+| F007 Runtime Bridge | won't-do | superseded by existing `mesh-node` + `mesh-adapter` + `mesh-bridge` composition |
+| F008 Graceful Lifecycle | complete | config validation + drain + SIGTERM/SIGINT shutdown |
+| F009 L2 Token Extension | complete | optional `targetCatId` claim + cat-level token validation |
 
 ## MVP Practical Run
 
@@ -78,6 +78,7 @@ Any runtime can join via either path:
 | Path | Description | Current Stage |
 |------|-------------|---------------|
 | Plugin Adapter | Map runtime semantics to Mesh protocol and identity flow | complete for Clowder/OpenClaw (`@agent-mesh/adapter`) |
+| Bridge Convenience Layer | Compose adapter + node SDK into one Clowder-first wiring layer | available as `@agent-mesh/bridge` |
 | Native Protocol | Implement protocol directly (HELLO/CAPS/INVOKE/RESULT/ERROR + identity model) | available |
 
 ## Application Scenarios (MVP)
@@ -102,6 +103,7 @@ These are roadmap explorations, not current delivery commitments.
 ```text
 packages/
   mesh-adapter/   Runtime plugin adapter (Clowder/OpenClaw -> Mesh semantics)
+  mesh-bridge/    Clowder-first wiring layer (adapter + MeshClient + MeshServer)
   mesh-hub/       Hub service (identity, routing, liveness, metrics)
   mesh-node/      Node SDK (MeshClient + MeshServer)
   mesh-protocol/  Shared protocol and identity definitions

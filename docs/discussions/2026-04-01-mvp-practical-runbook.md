@@ -116,6 +116,8 @@ For focused regression checks:
 pnpm --filter @agent-mesh/hub exec node --test dist/capability-model.test.js
 pnpm --filter @agent-mesh/hub exec node --test dist/node-liveness.test.js
 pnpm --filter @agent-mesh/hub exec node --test dist/observability.test.js
+pnpm --filter @agent-mesh/hub exec node --test dist/l2-token-extension.test.js
+pnpm --filter @agent-mesh/bridge exec node --test dist/bridge.test.js
 ```
 
 ## Known Drift to Track
