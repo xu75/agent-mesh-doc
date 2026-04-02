@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F009: L2 Token Extension
 
-> Status: complete | Owner: 宪宪
+> Status: done | Owner: 宪宪 | Completed: 2026-04-02
 
 ## Why
 
@@ -45,7 +45,17 @@ F003 (multi-capability model — needed to know which cats exist on a node)
 | 2026-04-02 | @codex review: P0 security fix (body injection), P2 AC-2 e2e test |
 | 2026-04-02 | PR #14 merged (squash) → main `9de1eb9` |
 
-## Open Questions
+## Evolution
+
+→ **Evolved toward**: Per-cat scope policies (Phase 2+). Currently scope is node-level; a future feature could add cat-level scope validation once targeting is stable.
+
+**Vision Guard** (2026-04-02): @gpt52 reviewed the calling-side and found the MeshClient/MeshBridge gap — `targetCatId` was not propagated from the call site. Fixed in follow-up commit `4d57cf9`. Full chain now: `invokeRemote({targetCatId}) → requestToken → Hub TOKEN/INVOKE → MeshServer → handler meta.targetCatId`.
+
+## Reflection
+
+`docs/reflections/F009-reflection.md`
+
+## Open Questions (deferred)
 
 - Should targetCatId be required in Phase 2+ or always optional?
 - Scope policy: node-level or cat-level?
