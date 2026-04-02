@@ -36,6 +36,15 @@ F003 (multi-capability model — needed to know which cats exist on a node)
 - Adding claims to JWT increases token size (negligible)
 - Future: may need per-cat scope policies (deferred)
 
+## Timeline
+
+| Date | Event |
+|------|-------|
+| 2026-04-01 | F009 spec written |
+| 2026-04-02 | Implementation complete (112/112 tests) |
+| 2026-04-02 | @codex review: P0 security fix (body injection), P2 AC-2 e2e test |
+| 2026-04-02 | PR #14 merged (squash) → main `9de1eb9` |
+
 ## Open Questions
 
 - Should targetCatId be required in Phase 2+ or always optional?
