@@ -49,6 +49,9 @@ MVP foundation is implemented and runnable.
 | F007 Runtime Bridge | won't-do | superseded by existing `mesh-node` + `mesh-adapter` + `mesh-bridge` composition |
 | F008 Graceful Lifecycle | complete | config validation + drain + SIGTERM/SIGINT shutdown |
 | F009 L2 Token Extension | complete | optional `targetCatId` claim + cat-level token validation |
+| F010 Mesh-Cat Cafe Integration | in-progress | MeshBridge + MCP tools (mesh_discover/mesh_invoke) + sidecar shim |
+| F011 Local TTS Bridge Example | spec | first real-capability bridge (Qwen3-TTS) |
+| F012 Public Discovery Layer | complete | landing page + /v1/discovery + OpenAPI spec |
 
 ## MVP Practical Run
 
@@ -146,7 +149,7 @@ curl http://127.0.0.1:3004/health
 - [MVP runbook](docs/discussions/2026-04-01-mvp-practical-runbook.md)
 - [MVP communication architecture decision](docs/decisions/2026-04-01-mesh-hub-mvp-communication-architecture.md)
 - [20-round debate notes](docs/debate-20r.md)
-- [Feature specs directory (F001-F009)](docs/features/)
+- [Feature specs directory (F001-F012)](docs/features/)
 
 ## Related
 

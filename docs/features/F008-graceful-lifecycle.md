@@ -8,7 +8,7 @@ created: 2026-04-01
 
 # F008: Graceful Lifecycle
 
-> Status: review | Owner: 宪宪
+> Status: complete | Owner: 宪宪
 
 ## Why
 
