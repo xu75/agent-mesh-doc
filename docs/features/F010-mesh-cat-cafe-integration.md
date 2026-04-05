@@ -1,6 +1,6 @@
 ---
 feature_ids: [F010]
-related_features: [F001, F002, F004, F007, F009]
+related_features: [F001, F002, F004, F007, F009, F015]
 topics: [integration, cat-cafe, mesh-bridge, mcp-tools]
 doc_kind: spec
 created: 2026-04-02
