@@ -4,6 +4,14 @@ related_features: [F003, F004]
 topics: [sdk, examples, docs, dx]
 doc_kind: spec
 created: 2026-04-01
+layer: protocol
+owner_module: mesh-node
+status: complete
+phase: 1
+depends_on:
+  - { id: F003, type: blocking }
+  - { id: F004, type: blocking }
+evidence: [examples/hello-world, examples/two-node-chat]
 ---
 
 # F005: Developer Experience Pack

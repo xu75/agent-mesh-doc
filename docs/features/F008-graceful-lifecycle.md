@@ -4,6 +4,12 @@ related_features: []
 topics: [hub, lifecycle, config, shutdown]
 doc_kind: spec
 created: 2026-04-01
+layer: protocol
+owner_module: mesh-hub
+status: complete
+phase: 1
+depends_on: []
+evidence: [hub.test.ts]
 ---
 
 # F008: Graceful Lifecycle

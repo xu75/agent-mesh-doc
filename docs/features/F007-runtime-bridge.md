@@ -4,6 +4,14 @@ related_features: [F002, F003]
 topics: [adapter, runtime, clowder, openclaw]
 doc_kind: spec
 created: 2026-04-01
+layer: protocol
+owner_module: mesh-bridge
+status: won't-do
+phase: 1
+depends_on:
+  - { id: F002, type: blocking }
+  - { id: F003, type: blocking }
+evidence: []
 ---
 
 # F007: Runtime Bridge

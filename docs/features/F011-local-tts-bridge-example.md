@@ -1,9 +1,19 @@
 ---
 feature_ids: [F011]
-related_features: [F002, F004, F010]
+related_features: [F002, F004, F010, F013, F014]
 topics: [tts, bridge, local-model, capability, example]
 doc_kind: spec
 created: 2026-04-02
+layer: application
+owner_module: bridge-tts
+status: spec
+phase: 1
+depends_on:
+  - { id: F002, type: blocking }
+  - { id: F010, type: blocking }
+  - { id: F013, type: related }
+  - { id: F014, type: related }
+evidence: []
 ---
 
 # F011: Local TTS Bridge Example
@@ -81,6 +91,15 @@ Out of scope:
 - 本地模型资源压力（CPU/GPU/内存）导致调用抖动
 - 音频结果格式不统一导致调用方接入成本上升
 - 本地运行时包装层与可发布桥接层边界不清，造成目录治理回退
+
+## Post-Delivery TODO (Ops Hardening)
+
+- [ ] TODO-H1: `bridge-tts` 在 Hub 重启或连接中断后自动完成 re-HELLO（无需人工重启 bridge 进程）
+  - 现状：Hub 重启后，bridge 进程可能仍在运行，但 Hub 侧节点状态会回到 offline，调用返回 503
+  - 目标：bridge 检测到 heartbeat/INVOKE 通道失效时自动重握手并恢复在线状态
+- [ ] TODO-H2: 增加远端可发现的音色目录能力（`tts.listVoices` 或 CAPS metadata 扩展）
+  - 现状：远端只能通过文档/约定知道 `voice` 可选值，无法动态探测
+  - 目标：调用方可在调用 `tts.synthesize` 前先查询可用音色、默认值与参数约束
 
 ## Open Questions
 

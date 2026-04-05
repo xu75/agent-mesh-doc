@@ -4,6 +4,12 @@ related_features: []
 topics: [security, identity, hub, w1-w2]
 doc_kind: spec
 created: 2026-03-30
+layer: governance
+owner_module: mesh-hub
+status: complete
+phase: 1
+depends_on: []
+evidence: [hub.test.ts, l2-token-extension.test.ts]
 ---
 
 # F001: Security & Identity Foundation (W1-W2)

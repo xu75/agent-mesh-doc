@@ -4,11 +4,19 @@ related_features: [F010, F004]
 topics: [test-nodes, infrastructure, systemd, echo-node, reviewer-node, persistence]
 doc_kind: spec
 created: 2026-04-05
+layer: application
+owner_module: mesh-node
+status: spec
+phase: 1
+depends_on:
+  - { id: F010, type: blocking }
+  - { id: F004, type: blocking }
+evidence: []
 ---
 
 # F015: Resident Test Nodes（常驻测试节点）
 
-> **Status**: in-progress | **Owner**: 宪宪 | **Priority**: P1
+> **Status**: spec | **Owner**: 宪宪 | **Priority**: P1
 
 ## Why
 

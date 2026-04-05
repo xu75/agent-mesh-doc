@@ -4,6 +4,15 @@ related_features: [F001, F002, F004, F007, F009, F015]
 topics: [integration, cat-cafe, mesh-bridge, mcp-tools]
 doc_kind: spec
 created: 2026-04-02
+layer: integration
+owner_module: mesh-bridge
+status: complete
+phase: 1
+depends_on:
+  - { id: F001, type: blocking }
+  - { id: F002, type: blocking }
+  - { id: F009, type: blocking }
+evidence: [experiments/e1-cat-cafe-mesh]
 ---
 
 # F010: Mesh-Cat Cafe Integration (信使模式 MVP)

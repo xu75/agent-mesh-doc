@@ -4,6 +4,14 @@ related_features: [F001, F002]
 topics: [hub, capability, discovery]
 doc_kind: spec
 created: 2026-04-01
+layer: governance
+owner_module: mesh-hub
+status: complete
+phase: 1
+depends_on:
+  - { id: F001, type: blocking }
+  - { id: F002, type: blocking }
+evidence: [capability-model.test.ts]
 ---
 
 # F003: Capability Model Refactor

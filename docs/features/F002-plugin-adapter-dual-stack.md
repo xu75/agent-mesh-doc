@@ -4,6 +4,13 @@ related_features: [F001]
 topics: [plugin-adapter, interoperability, clowder, openclaw]
 doc_kind: spec
 created: 2026-03-31
+layer: protocol
+owner_module: mesh-adapter
+status: complete
+phase: 1
+depends_on:
+  - { id: F001, type: blocking }
+evidence: [plugin-adapter.test.ts]
 ---
 
 # F002: Plugin Adapter Dual-Stack (Clowder/OpenClaw)

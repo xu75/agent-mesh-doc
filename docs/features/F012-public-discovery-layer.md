@@ -4,6 +4,13 @@ related_features: [F005, F010, F013]
 topics: [discovery, landing-page, directory, openapi, agent-card, onboarding]
 doc_kind: spec
 created: 2026-04-02
+layer: integration
+owner_module: mesh-hub
+status: complete
+phase: 1
+depends_on:
+  - { id: F005, type: blocking }
+evidence: [discovery.test.ts]
 ---
 
 # F012: Public Discovery Layer（公开发现层）

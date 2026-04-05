@@ -49,9 +49,12 @@ MVP foundation is implemented and runnable.
 | F007 Runtime Bridge | won't-do | superseded by existing `mesh-node` + `mesh-adapter` + `mesh-bridge` composition |
 | F008 Graceful Lifecycle | complete | config validation + drain + SIGTERM/SIGINT shutdown |
 | F009 L2 Token Extension | complete | optional `targetCatId` claim + cat-level token validation |
-| F010 Mesh-Cat Cafe Integration | in-progress | MeshBridge + MCP tools (mesh_discover/mesh_invoke) + sidecar shim |
+| F010 Mesh-Cat Cafe Integration | complete | MeshBridge + MCP tools (mesh_discover/mesh_invoke) + sidecar shim |
 | F011 Local TTS Bridge Example | spec | first real-capability bridge (Qwen3-TTS) |
 | F012 Public Discovery Layer | complete | landing page + /v1/discovery + OpenAPI spec |
+| F013 Open Node Registration | spec | 动态节点自注册，不再需要静态白名单 |
+| F014 Hybrid Routing | spec | 直连 URL + Hub Relay 混合路由 |
+| F015 Resident Test Nodes | spec | echo-node/reviewer-node 常驻基础设施 |
 
 ## MVP Practical Run
 
