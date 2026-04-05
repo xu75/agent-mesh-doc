@@ -9,6 +9,9 @@ created: 2026-04-05
 > This document is the **architecture judgment tool** for Agent Mesh.
 > It defines hard constraints, dependency rules, and the feature map.
 > Every cat should read this before starting work on any feature.
+> Chinese version: [docs/ARCHITECTURE.zh-CN.md](ARCHITECTURE.zh-CN.md)
+> Sync rule: update the English and Chinese versions in the same commit.
+> Mermaid note: GitHub and VS Code Markdown preview render the diagrams; plain browser Markdown viewers usually show source text only.
 
 ## 1. Layered Architecture
 

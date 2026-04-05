@@ -8,7 +8,7 @@ created: 2026-03-30
 
 ## Pre-Work: Architecture Check
 
-Before starting any feature work, read [`docs/ARCHITECTURE.md`](ARCHITECTURE.md):
+Before starting any feature work, read [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) or [`docs/ARCHITECTURE.zh-CN.md`](ARCHITECTURE.zh-CN.md):
 - Identify which layer(s) your work touches
 - Verify your dependencies against the whitelist matrix
 - Check if your feature is Phase 1 or Phase 2 scope

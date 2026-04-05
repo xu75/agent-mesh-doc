@@ -77,6 +77,13 @@ node examples/two-node-chat/dist/run.js
   - Future: Hub governance + optional direct data path
   - Not selected for MVP: pure P2P topology
 
+## Architecture Docs
+
+- [Architecture Map (English)](docs/ARCHITECTURE.md)
+- [架构全景图（中文）](docs/ARCHITECTURE.zh-CN.md)
+
+Mermaid diagrams render on GitHub and VS Code Markdown preview. If you open the Markdown file directly in a plain browser viewer, you will see Mermaid source text instead of rendered diagrams.
+
 ## Integration Model
 
 Any runtime can join via either path:
@@ -148,11 +155,13 @@ curl http://127.0.0.1:3004/health
 ## Source of Truth
 
 - [README](README.md)
+- [Architecture Map (English)](docs/ARCHITECTURE.md)
+- [架构全景图（中文）](docs/ARCHITECTURE.zh-CN.md)
 - [BACKLOG](BACKLOG.md)
 - [MVP runbook](docs/discussions/2026-04-01-mvp-practical-runbook.md)
 - [MVP communication architecture decision](docs/decisions/2026-04-01-mesh-hub-mvp-communication-architecture.md)
 - [20-round debate notes](docs/debate-20r.md)
-- [Feature specs directory (F001-F012)](docs/features/)
+- [Feature specs directory (F001-F015)](docs/features/)
 
 ## Related
 
