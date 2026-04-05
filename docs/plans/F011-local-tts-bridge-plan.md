@@ -558,7 +558,7 @@ git commit -m "feat(F011): TTS handler with scope guard + payload validation"
  *   TTS_RUNTIME_URL=http://127.0.0.1:5001 npx tsx packages/bridge-tts/src/bridge.ts
  *
  * Env vars:
- *   MESH_HUB_URL        — Hub URL (default: http://127.0.0.1:3004)
+ *   MESH_HUB_URL        — Hub URL (default: http://127.0.0.1:3010)
  *   TTS_NODE_ID          — Node ID (default: tts-bridge)
  *   TTS_IDENTITY_DIR     — Identity storage dir (default: .tts-identity)
  *   TTS_PORT             — Callback server port (default: 3008)
@@ -577,7 +577,7 @@ import {
 import { createTtsHandler } from "./handler.js";
 import { synthesize } from "./synthesizer.js";
 
-const HUB_URL = process.env.MESH_HUB_URL ?? "http://127.0.0.1:3004";
+const HUB_URL = process.env.MESH_HUB_URL ?? "http://127.0.0.1:3010";
 const NODE_ID = process.env.TTS_NODE_ID ?? "tts-bridge";
 const IDENTITY_DIR = process.env.TTS_IDENTITY_DIR ?? ".tts-identity";
 const PORT = Number(process.env.TTS_PORT ?? "3008");
@@ -875,7 +875,7 @@ git commit -m "feat(F011): qwen3-tts Python runtime wrapper with stub fallback"
  * Minimal TTS invoke demo — calls tts-bridge through mesh.
  *
  * Usage:
- *   MESH_HUB_URL=http://127.0.0.1:3004 npx tsx examples/tts-bridge/invoke-tts.ts "Hello world"
+ *   MESH_HUB_URL=http://127.0.0.1:3010 npx tsx examples/tts-bridge/invoke-tts.ts "Hello world"
  *
  * Prerequisites:
  *   1. Hub running with tts-bridge in allowedNodes
@@ -891,7 +891,7 @@ import {
   saveIdentity,
 } from "@agent-mesh/node";
 
-const HUB_URL = process.env.MESH_HUB_URL ?? "http://127.0.0.1:3004";
+const HUB_URL = process.env.MESH_HUB_URL ?? "http://127.0.0.1:3010";
 const CALLER_ID = process.env.CALLER_NODE_ID ?? "tts-demo-caller";
 const IDENTITY_DIR = ".tts-demo-identity";
 
@@ -1004,7 +1004,7 @@ End-to-end TTS via agent-mesh: Caller -> Hub -> TTS Bridge -> Qwen3-TTS Runtime.
 
 ## Prerequisites
 
-1. Hub running at `http://127.0.0.1:3004` (or set `MESH_HUB_URL`)
+1. Hub running at `http://127.0.0.1:3010` (or set `MESH_HUB_URL`)
 2. Hub config includes `tts-bridge` and `tts-demo-caller` in `allowedNodes` (see `config-tts-bridge.json`)
 3. Python 3.10+ with `pip install fastapi uvicorn pydantic`
 

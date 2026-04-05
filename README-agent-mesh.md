@@ -143,14 +143,29 @@ pnpm build
 pnpm --filter @agent-mesh/hub start
 ```
 
-Default Hub listen address:
-- `0.0.0.0:3004`
+Default local Hub bind address:
+- `0.0.0.0:3010`
 
-Health check:
+Local health check:
 
 ```bash
-curl http://127.0.0.1:3004/health
+curl http://127.0.0.1:3010/health
 ```
+
+## Public Hub
+
+Current public deployment entrypoint:
+- `https://www.mesh-hub.xyz`
+
+Public health check:
+
+```bash
+curl https://www.mesh-hub.xyz/health
+```
+
+Domain note:
+- `mesh-hub.xyz` permanently redirects to `https://www.mesh-hub.xyz`
+- For scripts and programmatic clients, prefer the `www.` URL directly
 
 ## Source of Truth
 

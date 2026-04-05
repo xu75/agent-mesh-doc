@@ -583,10 +583,10 @@ Expected: All tests PASS (existing + new F012 tests).
 cd packages/mesh-hub
 MESH_HUB_CONFIG=deploy/config.example.json pnpm start
 # In another terminal:
-curl http://localhost:3004/                  # HTML landing page
-curl http://localhost:3004/v1/discovery      # JSON self-description
-curl http://localhost:3004/v1/directory      # JSON capability directory
-curl http://localhost:3004/v1/openapi.json   # OpenAPI spec
+curl http://localhost:3010/                  # HTML landing page
+curl http://localhost:3010/v1/discovery      # JSON self-description
+curl http://localhost:3010/v1/directory      # JSON capability directory
+curl http://localhost:3010/v1/openapi.json   # OpenAPI spec
 ```
 
 **Step 3: Final commit — update spec status**
