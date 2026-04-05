@@ -1,6 +1,6 @@
 ---
 feature_ids: [F012]
-related_features: [F005, F010]
+related_features: [F005, F010, F013]
 topics: [discovery, landing-page, directory, openapi, agent-card, onboarding]
 doc_kind: spec
 created: 2026-04-02
@@ -44,7 +44,7 @@ created: 2026-04-02
 {
   "name": "Cat Cafe Mesh Hub",
   "description": "Multi-agent collaboration mesh",
-  "protocol": { "name": "clowder", "version": "v1" },
+  "protocol": { "name": "agent-mesh", "version": "v1" },
   "authentication": {
     "type": "ed25519-hello-handshake",
     "keyFormat": "JWK",
