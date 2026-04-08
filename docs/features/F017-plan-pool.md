@@ -661,7 +661,7 @@ function canAcceptExternalRequest(bridge: Bridge, callerMemberId: string): boole
 | 创建 team | `POST /v1/admin/teams` | pool owner |
 | 创建邀请码 | `POST /v1/admin/invites` | team owner/admin |
 | 暂停成员 | `PUT /v1/admin/members/:id/suspend` | team owner/admin |
-| 设置成员透支上限 | `PUT /v1/admin/members/:id/borrow-limit` | team owner/admin |
+| 设置成员透支上限（含 owner 自己） | `PUT /v1/admin/members/:id/borrow-limit` | team owner/admin |
 | 轮换成员 API key | `POST /v1/admin/members/:id/rotate-key` | team owner/admin |
 | 查看团队用量 | `GET /v1/admin/usage` | team owner/admin |
 
@@ -801,7 +801,7 @@ LEFT JOIN (
 - [x] AC-30: 成本计算优先级——provider 上报 `costUsd` > `tokens × 官方定价` > fixed request weight（$0.02 fallback）。记录 `cost_source` 标注来源。
 - [x] AC-31: 自路由禁止——pool-node 路由硬规则：`bridge.owner_member_id !== caller.member_id`。禁止将请求路由到 caller 自己的 bridge。
 - [x] AC-32: Owner-first（本机优先）——bridge 配置 `shareMode`（`off | idle-only | capped`，默认 `idle-only`）。`idle-only` 模式下 owner 活跃时拒绝外部请求；`externalMaxConcurrency` 默认 1。
-- [x] AC-33: 管理员操作——MVP 最小集：创建 team、创建邀请码、暂停成员、设置透支上限、轮换 API key、查看用量（`GET /v1/admin/usage` 返回 JSON）。
+- [x] AC-33: 管理员操作——MVP 最小集：创建 team、创建邀请码、暂停成员、设置透支上限、轮换 API key、查看用量（`GET /v1/admin/usage` 返回 JSON）。其中“设置透支上限”适用于任意 member，包含 team owner 自己。
 
 ### F013-lite
 

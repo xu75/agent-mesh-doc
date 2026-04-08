@@ -176,7 +176,7 @@ Single HTML file, vanilla JS + fetch(). Auth via **owner API key** in sessionSto
 | Generate invite | POST /v1/admin/invites | Button → copyable code |
 | Member table | GET /v1/admin/usage | Table: name / status / contributed / consumed / balance |
 | Suspend member | PUT /v1/admin/members/:id/suspend | Toggle button |
-| Adjust borrow limit | PUT /v1/admin/members/:id/borrow-limit | Inline edit |
+| Adjust borrow limit | PUT /v1/admin/members/:id/borrow-limit | Inline edit (any member, including owner self) |
 | Rotate key | POST /v1/admin/members/:id/rotate-key | Button + confirm |
 
 **Not included** (Phase 2):
@@ -343,7 +343,7 @@ There is **no separate admin token**. The admin model works like this:
 1. **Bootstrap**: `POST /v1/admin/teams` is unprotected (no auth) — anyone can create a team
 2. **Team creation** returns the owner member's API key — this is the "admin credential"
 3. **All other admin routes** require `role: "owner"` — checked via the owner's member API key
-4. **Only the team owner** can create invites, suspend members, adjust limits, etc.
+4. **Only the team owner** can create invites, suspend members, adjust limits, etc. `borrow-limit` applies to any member record, including the owner's own member.
 
 ```bash
 # Step 1: Create team (unprotected bootstrap)
