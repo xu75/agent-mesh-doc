@@ -9,6 +9,7 @@ parent: docs/features/F017-plan-pool.md
 # F017: Plan Pool Deployment Guide
 
 > Grey Release Plan for Phase 1.5 MVP
+> 当前灰度入口仍是 `http://<pool>:3011` 直连；正式对外入口已裁定为标准 `443` 反向代理，内部 app 端口保持 `3011`。
 
 ## 1. Deployment Topology
 
@@ -19,7 +20,10 @@ parent: docs/features/F017-plan-pool.md
     │   Hub Server (NAS / VPS)     │
     │   ┌────────────────────┐     │
     │   │ mesh-hub   :3010   │     │  ← existing, loopback OK
-    │   │ pool-node  :3011   │     │  ← NEW, 0.0.0.0 (外部可达)
+    │   │ pool-node  :3011   │     │  ← app port（灰度阶段外部直连）
+    │   └────────────────────┘     │
+    │   ┌────────────────────┐     │
+    │   │ public API   :443  │     │  ← 正式入口（reverse proxy → 3011）
     │   └────────────────────┘     │
     │              │               │
     ├──────────────┼───────────────┤
@@ -69,6 +73,13 @@ parent: docs/features/F017-plan-pool.md
 | bridge-api | 3012 | 127.0.0.1 | Bridge side, loopback |
 | Cat Cafe frontend | 3003 | — | Unrelated |
 | Cat Cafe API | 3004 | — | Unrelated |
+
+## 3.1 Public Entry Decision (Post Grey)
+
+- **当前灰度现状**：consumer / contributor 直接访问 `http://<pool>:3011`。
+- **正式目标入口**：对外统一收敛到标准 `443`，由 reverse proxy 转发到内部 `3011`。
+- **架构裁定**：保留 pool-node 独立进程；优先独立 API 域名/子域名，不把 provider-native `/v1/messages` 与 mesh-hub control plane 混在同一个 origin。
+- **文档约定**：灰度 runbook 继续保留 `3011` 示例；面向正式对外接口的 spec/README 应优先写公共 base URL。
 
 ## 4. Environment Variables
 
