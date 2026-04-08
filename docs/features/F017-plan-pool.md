@@ -871,6 +871,14 @@ Phase 1.5 (F017 MVP — 当前):
   → Caller 可以是 Claude Code / Cursor / 任意 HTTP 工具
   → 场景 B（个人多设备）作为场景 A 的子集自然支持
 
+Phase 1.5 补丁 (grey release 暴露的运维缺口):
+  P1: pool-node 启动从 DB 加载 bridge 到 router（重启后 bridge 不丢失）
+  P1: bridge→pool 周期性重注册（pool 重启/网络闪断后自动恢复）
+  P2: bridge child env 白名单/隔离（隔离 ANTHROPIC_BASE_URL 等 provider 变量，防污染）
+  P2: attested binary = executed binary（resolvedBinary 传入 handler，消除 hash/spawn 不一致）
+  P2: admin attestation 审批 API（PUT /v1/admin/bridges/:id/approve-attestation）
+  P2: bridge ↔ pool-node 长连接/relay（替代 SSH 隧道，scope 限 F017 内）
+
 Phase 2 (F017 扩展):
   跨 provider 额度映射（倍率系统）
   + 动态 Quota Overflow（基于 5h 窗口 + 历史利用率的智能释放）
