@@ -6,24 +6,28 @@ doc_kind: spec
 created: 2026-04-06
 layer: application
 owner_module: plan-pool
-status: spec
+status: phase-1.5-complete
 phase: 1.5
 depends_on:
   - { id: F001, type: blocking }
   - { id: F012, type: blocking }
   - { id: F013, type: related, note: "F013-lite（open 注册模式）建议前置实现" }
   - { id: F011, type: related, note: "bridge 分层模式可复用" }
-evidence: []
+evidence:
+  - { type: pr, ref: "#16", merged: "2026-04-07", title: "feat(F017): Plan Pool Phase 1.5 — team mutual-aid MVP" }
+  - { type: pr, ref: "#17", merged: "2026-04-08", title: "feat(F017): grey release prep — bootstrap protection + admin/join pages + source install" }
 roundtable: docs/discussions/F017-plan-pool-roundtable.md
 ---
 
 # F017: Plan Pool — 订阅计划池化与削峰填谷
 
-> Status: spec | Owner: TBD
+> Status: **Phase 1.5 complete** (PR #16 merged 2026-04-07, PR #17 merged 2026-04-08) | Owner: TBD
 > Roundtable: 2026-04-06（opus / codex / gemini / antig-opus）
 > Follow-up: 2026-04-07（opus / codex — 铲屎官 6 点改进 + 竞品分析）
 > Roundtable 2: 2026-04-07（opus / gpt52 / gemini / antig-opus — 团队互助额度机制）
 > 铲屎官裁定：优先做 non-API Plan；只做 Chat 模式；**MVP 优先场景 A（团队互助）**
+> **2026-04-07: Phase 1.5 implementation merged** (PR #16, 19 TDD tasks, 102 tests, 4 QG rounds + 3 review rounds)
+> **2026-04-08: Grey release prep merged** (PR #17, bootstrap protection + admin/join pages + source install)
 
 ## Why
 
@@ -751,54 +755,54 @@ LEFT JOIN (
 
 ### plan-bridge
 
-- [ ] AC-1: CLI 封装型 plan-bridge 可通过 `claude -p --session-id --output-format stream-json --tools ""` 封装 non-API Plan 为纯对话 A2A 节点。
-- [ ] AC-2: 每个调用方映射独立的 named session（UUID），上下文隔离。
-- [ ] AC-3: 并发上限由 `maxConcurrency` 配置（默认 3），超限返回 `RATE_LIMITED`。此为硬限制，不可被调用方覆盖。
-- [ ] AC-4: API 代理型 plan-bridge 通过 HTTP 转发实现，key 不暴露给调用方。
-- [ ] AC-5: plan-bridge 注册时声明 `provider` 和 `providerModel`。
-- [ ] AC-19: Session TTL 在 bridge 启动时可配置（`sessionTTLMinutes`，默认 30），过期 session 自动回收。
+- [x] AC-1: CLI 封装型 plan-bridge 可通过 `claude -p --session-id --output-format stream-json --tools ""` 封装 non-API Plan 为纯对话 A2A 节点。
+- [x] AC-2: 每个调用方映射独立的 named session（UUID），上下文隔离。
+- [x] AC-3: 并发上限由 `maxConcurrency` 配置（默认 3），超限返回 `RATE_LIMITED`。此为硬限制，不可被调用方覆盖。
+- [x] AC-4: API 代理型 plan-bridge 通过 HTTP 转发实现，key 不暴露给调用方。
+- [x] AC-5: plan-bridge 注册时声明 `provider` 和 `providerModel`。
+- [x] AC-19: Session TTL 在 bridge 启动时可配置（`sessionTTLMinutes`，默认 30），过期 session 自动回收。
 
 ### 安全
 
-- [ ] AC-14: `--tools ""` 生效——模型无法执行任何本地工具操作。
-- [ ] AC-15: 跨调用方 session 隔离——不同调用方的 session-id 不串线，上下文完全独立。
-- [ ] AC-16: 超预算（`--max-budget-usd`）或超并发（`maxConcurrency`）时返回 429 + `RATE_LIMITED`。
-- [ ] AC-17: CLI 进程使用 `spawn(shell: false)` + 最小化环境变量 + 隔离工作目录。
-- [ ] AC-18: provider 二进制 hash 校验在启动时执行，不一致时拒绝启动并记录告警。
-- [ ] AC-20: L1.5 环境探针——启动时校验 `BASE_URL` 是否指向官方 endpoint，非官方记录到 ledger；`team` 模式下默认拒绝非官方 endpoint，仅允许显式 `endpointAllowlist` 例外。`self` 模式 warn-only。
-- [ ] AC-21: HELLO 握手携带 attestation 字段（bridge version / binary hash / channel），MVP 阶段 warn-only 写 ledger，不做强校验（为 Phase 2 预留协议字段，避免破坏性升级）。
+- [x] AC-14: `--tools ""` 生效——模型无法执行任何本地工具操作。
+- [x] AC-15: 跨调用方 session 隔离——不同调用方的 session-id 不串线，上下文完全独立。
+- [x] AC-16: 超预算（`--max-budget-usd`）或超并发（`maxConcurrency`）时返回 429 + `RATE_LIMITED`。
+- [x] AC-17: CLI 进程使用 `spawn(shell: false)` + 最小化环境变量 + 隔离工作目录。
+- [x] AC-18: provider 二进制 hash 校验在启动时执行，不一致时拒绝启动并记录告警。
+- [x] AC-20: L1.5 环境探针——启动时校验 `BASE_URL` 是否指向官方 endpoint，非官方记录到 ledger；`team` 模式下默认拒绝非官方 endpoint，仅允许显式 `endpointAllowlist` 例外。`self` 模式 warn-only。
+- [x] AC-21: HELLO 握手携带 attestation 字段（bridge version / binary hash / channel），MVP 阶段 warn-only 写 ledger，不做强校验（为 Phase 2 预留协议字段，避免破坏性升级）。
 
 ### pool-node
 
-- [ ] AC-6: pool-node **主入口为 Provider-native HTTP API**（Anthropic `/v1/messages` + OpenAI `/v1/chat/completions`），辅入口为 A2A card（如 `agentId: "claude-pool"`）。Caller 不需要是 Mesh 节点。
-- [ ] AC-7: 请求分发策略：**session-sticky**（key = callerId + provider + namespace）+ round-robin fallback。同一 caller 的连续请求优先路由到同一 bridge（保持 `--resume` 上下文连贯）。绑定失效条件：bridge 不健康 / TTL 过期（默认 30 分钟无活动） / caller 显式请求 new-session。**禁止 caller 指定目标 bridge**。
-- [ ] AC-8: 所有 bridge 不可用时返回 `RATE_LIMITED` 给调用方（HTTP 429 / A2A RATE_LIMITED）。
-- [ ] AC-9: SQLite ledger 采用 **lease-based 记账**——请求前预扣（acquireLease）、成功后结算（settleLease）、失败时回滚（rollbackLease）。每条记录含 idempotency_key / source_node / bridge_id / provider / observed_model / input_tokens / output_tokens / cost_usd / lease_status / status / timestamp。悬挂 lease 超时后按保守策略结算并告警。
-- [ ] AC-10: provider 验真——从响应中提取实际 model，与声明不一致时标记 `verified: false` 并记录。
-- [ ] AC-22: Circuit Breaker（三态熔断器）——按错误类型分策略：`429` → quota cooldown（等窗口重置）；`5xx/timeout` → transient 计数熔断（阈值 4 次，探针 60s）；`401/403` → misconfigured 长熔断（需人工恢复）。`half-open` 使用 single-flight 探针，避免恢复风暴。
+- [x] AC-6: pool-node **主入口为 Provider-native HTTP API**（Anthropic `/v1/messages` + OpenAI `/v1/chat/completions`），辅入口为 A2A card（如 `agentId: "claude-pool"`）。Caller 不需要是 Mesh 节点。
+- [x] AC-7: 请求分发策略：**session-sticky**（key = callerId + provider + namespace）+ round-robin fallback。同一 caller 的连续请求优先路由到同一 bridge（保持 `--resume` 上下文连贯）。绑定失效条件：bridge 不健康 / TTL 过期（默认 30 分钟无活动） / caller 显式请求 new-session。**禁止 caller 指定目标 bridge**。
+- [x] AC-8: 所有 bridge 不可用时返回 `RATE_LIMITED` 给调用方（HTTP 429 / A2A RATE_LIMITED）。
+- [x] AC-9: SQLite ledger 采用 **lease-based 记账**——请求前预扣（acquireLease）、成功后结算（settleLease）、失败时回滚（rollbackLease）。每条记录含 idempotency_key / source_node / bridge_id / provider / observed_model / input_tokens / output_tokens / cost_usd / lease_status / status / timestamp。悬挂 lease 超时后按保守策略结算并告警。
+- [x] AC-10: provider 验真——从响应中提取实际 model，与声明不一致时标记 `verified: false` 并记录。
+- [x] AC-22: Circuit Breaker（三态熔断器）——按错误类型分策略：`429` → quota cooldown（等窗口重置）；`5xx/timeout` → transient 计数熔断（阈值 4 次，探针 60s）；`401/403` → misconfigured 长熔断（需人工恢复）。`half-open` 使用 single-flight 探针，避免恢复风暴。
 
 ### API Gateway
 
-- [ ] AC-23: 根据 team 的 `provider_scope` 自动暴露对应 HTTP 端点——Claude team → `POST /v1/messages`（Anthropic 兼容），GPT team → `POST /v1/chat/completions`（OpenAI 兼容）。多 team pool 同时暴露两个端点。
-- [ ] AC-24: per-member API key 认证——加入 team 后签发，key → `team_id + member_id`。不暴露底层 bridge 凭证。
-- [ ] AC-25: 流式输出——Anthropic 端点返回 Anthropic SSE 格式（`event: content_block_delta`），OpenAI 端点返回 OpenAI SSE 格式（`data: {"choices":[...]}`）。bridge 内部 stream-json 由 api-gateway 转译为 caller 期望的格式。
-- [ ] AC-26: `GET /v1/models` 返回当前 pool 中可用的 provider + model 列表。
+- [x] AC-23: 根据 team 的 `provider_scope` 自动暴露对应 HTTP 端点——Claude team → `POST /v1/messages`（Anthropic 兼容），GPT team → `POST /v1/chat/completions`（OpenAI 兼容）。多 team pool 同时暴露两个端点。
+- [x] AC-24: per-member API key 认证——加入 team 后签发，key → `team_id + member_id`。不暴露底层 bridge 凭证。
+- [x] AC-25: 流式输出——Anthropic 端点返回 Anthropic SSE 格式（`event: content_block_delta`），OpenAI 端点返回 OpenAI SSE 格式（`data: {"choices":[...]}`）。bridge 内部 stream-json 由 api-gateway 转译为 caller 期望的格式。
+- [x] AC-26: `GET /v1/models` 返回当前 pool 中可用的 provider + model 列表。
 
 ### 团队与额度
 
-- [ ] AC-27: Team 为一等实体，每个 team 绑定一个 `provider_scope`，只接受对应 provider 的 bridge 注册。同一 pool-node 可托管多个 team。
-- [ ] AC-28: 一次性邀请码加入——`code + TTL + maxUses`，用完即失效。加入后 TOFU 绑定 publicKey，签发 per-member API key。
-- [ ] AC-29: 透支额度模型（Mutual Credit）——`available = contributed - consumed + borrowLimit`。`available <= 0` 时返回 `QUOTA_EXHAUSTED`（HTTP 402）。管理员可为个人设置 `borrow_limit_override`。
-- [ ] AC-30: 成本计算优先级——provider 上报 `costUsd` > `tokens × 官方定价` > fixed request weight（$0.02 fallback）。记录 `cost_source` 标注来源。
-- [ ] AC-31: 自路由禁止——pool-node 路由硬规则：`bridge.owner_member_id !== caller.member_id`。禁止将请求路由到 caller 自己的 bridge。
-- [ ] AC-32: Owner-first（本机优先）——bridge 配置 `shareMode`（`off | idle-only | capped`，默认 `idle-only`）。`idle-only` 模式下 owner 活跃时拒绝外部请求；`externalMaxConcurrency` 默认 1。
-- [ ] AC-33: 管理员操作——MVP 最小集：创建 team、创建邀请码、暂停成员、设置透支上限、轮换 API key、查看用量（`GET /v1/admin/usage` 返回 JSON）。
+- [x] AC-27: Team 为一等实体，每个 team 绑定一个 `provider_scope`，只接受对应 provider 的 bridge 注册。同一 pool-node 可托管多个 team。
+- [x] AC-28: 一次性邀请码加入——`code + TTL + maxUses`，用完即失效。加入后 TOFU 绑定 publicKey，签发 per-member API key。
+- [x] AC-29: 透支额度模型（Mutual Credit）——`available = contributed - consumed + borrowLimit`。`available <= 0` 时返回 `QUOTA_EXHAUSTED`（HTTP 402）。管理员可为个人设置 `borrow_limit_override`。
+- [x] AC-30: 成本计算优先级——provider 上报 `costUsd` > `tokens × 官方定价` > fixed request weight（$0.02 fallback）。记录 `cost_source` 标注来源。
+- [x] AC-31: 自路由禁止——pool-node 路由硬规则：`bridge.owner_member_id !== caller.member_id`。禁止将请求路由到 caller 自己的 bridge。
+- [x] AC-32: Owner-first（本机优先）——bridge 配置 `shareMode`（`off | idle-only | capped`，默认 `idle-only`）。`idle-only` 模式下 owner 活跃时拒绝外部请求；`externalMaxConcurrency` 默认 1。
+- [x] AC-33: 管理员操作——MVP 最小集：创建 team、创建邀请码、暂停成员、设置透支上限、轮换 API key、查看用量（`GET /v1/admin/usage` 返回 JSON）。
 
 ### F013-lite
 
-- [ ] AC-11: Hub 配置 `registrationMode: "open"` 后，新节点凭 nodeId + publicKey 可 HELLO 自注册。
-- [ ] AC-12: `whitelist` 模式行为不变（向后兼容）。
-- [ ] AC-13: 动态注册节点的 maxScopes 不超过 config 的 `defaultMaxScopes` 上限。
+- [x] AC-11: Hub 配置 `registrationMode: "open"` 后，新节点凭 nodeId + publicKey 可 HELLO 自注册。
+- [x] AC-12: `whitelist` 模式行为不变（向后兼容）。
+- [x] AC-13: 动态注册节点的 maxScopes 不超过 config 的 `defaultMaxScopes` 上限。
 
 ## 交付物
 
