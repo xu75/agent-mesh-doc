@@ -880,7 +880,7 @@ Phase 1.5 补丁 (grey release 暴露的运维缺口):
   P2: bridge child env 白名单/隔离（隔离 ANTHROPIC_BASE_URL 等 provider 变量，防污染）
   P2: attested binary = executed binary（resolvedBinary 传入 handler，消除 hash/spawn 不一致）
   P2: admin attestation 审批 API（PUT /v1/admin/bridges/:id/approve-attestation）
-  P2: bridge ↔ pool-node 长连接/relay（替代 SSH 隧道，scope 限 F017 内）
+  ~~P2: bridge ↔ pool-node 长连接/relay~~ → **Done**: Hub dual-transport (F017-WS) 已实现 outbound WS，SSH 隧道已消除
 
 Phase 2 (F017 扩展):
   跨 provider 额度映射（倍率系统）

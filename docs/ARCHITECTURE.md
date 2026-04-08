@@ -231,7 +231,7 @@ graph LR
     NA -- "CAPS → discovery" --> H
     NA -- "TOKEN → L2 token" --> H
     NA -- "INVOKE (payload)" --> H
-    H -- "forward (callbackUrl)" --> NB
+    H -- "dispatch (WS or callback)" --> NB
     NB -. "RESULT" .-> H
     H -. "RESULT" .-> NA
 ```
@@ -294,7 +294,7 @@ sequenceDiagram
 
     rect rgb(255,245,230)
         Note over HB,RT2: Hub → Target
-        HB->>ND2: forward INVOKE (callbackUrl)
+        HB->>ND2: dispatch INVOKE (WS or callback)
         ND2->>ND2: verify L2 token
         ND2->>AD2: fromMeshInvoke()
         AD2->>RT2: runtime-native call

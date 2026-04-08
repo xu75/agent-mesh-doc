@@ -69,8 +69,8 @@ parent: docs/features/F017-plan-pool.md
 |---------|------|--------|------|
 | mesh-hub | 3010 | 127.0.0.1 | Existing, loopback |
 | pool-node | 3011 | **0.0.0.0** | External (LAN/VPN) |
-| bridge-cli | 3009 | 127.0.0.1 | Bridge side, loopback |
-| bridge-api | 3012 | 127.0.0.1 | Bridge side, loopback |
+| bridge-cli | — | — | Outbound WS to Hub (no listen port) |
+| bridge-api | — | — | Outbound WS to Hub (no listen port) |
 | Cat Cafe frontend | 3003 | — | Unrelated |
 | Cat Cafe API | 3004 | — | Unrelated |
 
@@ -102,12 +102,9 @@ POOL_BINDING_CLEANUP_INTERVAL_MS=300000
 
 ### bridge-cli (Contributor Machine)
 
-> **Connectivity caveat (grey release)**: Hub currently listens on `127.0.0.1` only.
-> Bridge-cli requires bidirectional connectivity with Hub (HTTP for HELLO/heartbeat,
-> and Hub must reach bridge's callback URL for INVOKE). During grey release, bridges
-> must run on the same machine as Hub or use SSH reverse tunnels. A relay-based
-> architecture (bridge polls pool-node instead of Hub pushing to callback) is planned
-> for Phase B to remove this constraint.
+> **Transport**: Bridge connects outbound to Hub via WebSocket (`/v1/ws`). No port
+> forwarding or SSH tunnel needed — bridge works from any network with outbound
+> HTTP/WS access to Hub. Hub dispatches INVOKE over the WS connection.
 
 ```bash
 # === Required ===
@@ -121,7 +118,6 @@ PLAN_BRIDGE_CLI_BINARY=claude            # Must be in PATH
 PLAN_BRIDGE_MAX_BUDGET_USD=0.5
 PLAN_BRIDGE_MAX_CONCURRENCY=3
 PLAN_BRIDGE_SESSION_TTL_MINUTES=30
-PLAN_BRIDGE_PORT=3009
 POOL_PROVIDER=claude
 POOL_ENDPOINT_ALLOWLIST=                 # Comma-separated, empty = official only
 ```
@@ -140,7 +136,6 @@ PLAN_BRIDGE_API_NODE_ID=plan-bridge-api
 PLAN_BRIDGE_API_PROVIDER=gpt
 PLAN_BRIDGE_API_TARGET_URL=https://api.openai.com/v1/chat/completions
 PLAN_BRIDGE_API_MAX_CONCURRENCY=5
-PLAN_BRIDGE_API_PORT=3012
 ```
 
 ## 5. Static Pages (pool-node)
