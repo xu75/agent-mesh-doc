@@ -9,4 +9,4 @@ Public documentation mirror for the [xu75/agent-mesh](https://github.com/xu75/ag
 - [Feature Docs](docs/features)
 - [Source Project README](README-agent-mesh.md)
 
-Synced from source commit: 9c28726523fe8db0a8a4eb17feea9b198c46fbf0
+Synced from source commit: df4fb2ecbe6d32588b963d2cf3285bbcd889818b

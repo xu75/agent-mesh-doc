@@ -931,6 +931,35 @@ Phase 3 (远期):
 8. **Claude CLI 的 `costUsd` 稳定性**：CLI `stream-json` 是否稳定输出可用于结算的 cost 字段？如果不稳定，`tokens × 官方定价` 需要作为 MVP 的正式路径而非 fallback。
 9. **跨 provider 倍率系统**（Phase 2）：不同 provider / model 如何换算为可比的 normalized_usd。候选：官方 API 定价倍率 / 社区定价共识 / admin 自定义。
 
+## Grey Release Follow-ups (2026-04-08)
+
+> 这批事项来自 2026-04-08 灰度 thread 的真实踩坑，已和铲屎官确认按 `4+1` 优先级进入后续清单。
+
+### P1 主线
+
+1. **Router durability**  
+   pool 启动时从 DB 恢复 bridge 到 in-memory router；bridge 增加周期性重注册/心跳，避免 pool 重启后路由空窗。
+
+2. **Bridge 运维完整性**  
+   作为同一组 follow-up 处理，但实现时拆成两个子方向：
+   - **Durable bridge identity**：规范 identity 存储、publicKey pin、resume 路径，避免 bridge 重启后身份漂移。
+   - **Admin / runbook 闭环**：补 attestation re-approve 路径与 deploy/service runbook，把“suspend 之后如何恢复共享”收口成明确流程。
+
+### P2 主线
+
+3. **Pure-LLM runtime profile**  
+   把当前 `--bare` + `buildCleanEnv()` 的止血方案升级为正式运行契约，明确 child env allowlist、provider/base-url 隔离和 chat-only profile。
+
+4. **Shared usage contract + provider-neutral consumption**  
+   backlog 先作为单个 item 管理；实现阶段再拆成：
+   - usage schema 契约（与 Cat Cafe/Clowder 对齐 model/tokens/cache/cost/contextWindow 语义）
+   - admin/UI 语义（无 provider cost 时如何展示 observed cost / normalized cost / unavailable）
+
+### P3 记账
+
+5. **`attested binary = executed binary`**  
+   当前记为安全纵深增强，不进入这批灰度 follow-up 主线；等 P1/P2 收口后再评估是否前移。
+
 ## 参考
 
 ### 圆桌讨论
