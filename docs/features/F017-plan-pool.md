@@ -16,6 +16,7 @@ depends_on:
 evidence:
   - { type: pr, ref: "#16", merged: "2026-04-07", title: "feat(F017): Plan Pool Phase 1.5 — team mutual-aid MVP" }
   - { type: pr, ref: "#17", merged: "2026-04-08", title: "feat(F017): grey release prep — bootstrap protection + admin/join pages + source install" }
+  - { type: pr, ref: "#18", merged: "2026-04-08", title: "fix(F017): grey release hotfix — CLI verbose, response cleanup, ws:// drift, HTTP join fix" }
 roundtable: docs/discussions/F017-plan-pool-roundtable.md
 ---
 
@@ -28,6 +29,7 @@ roundtable: docs/discussions/F017-plan-pool-roundtable.md
 > 铲屎官裁定：优先做 non-API Plan；只做 Chat 模式；**MVP 优先场景 A（团队互助）**
 > **2026-04-07: Phase 1.5 implementation merged** (PR #16, 19 TDD tasks, 102 tests, 4 QG rounds + 3 review rounds)
 > **2026-04-08: Grey release prep merged** (PR #17, bootstrap protection + admin/join pages + source install)
+> **2026-04-08: Grey release hotfix merged** (PR #18, CLI verbose flag + response cleanup + ws:// drift + HTTP join fix)
 
 ## Why
 
