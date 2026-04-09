@@ -52,6 +52,35 @@ MVP 阶段采用 **A: 纯 Hub Relay** 作为唯一通讯路径。
 
 - `MeshClient.invoke()` 当前固定请求 Hub `/v1/invoke`。
 - Hub `/v1/invoke` 校验后转发到目标 `callbackUrl`。
-- Node Server 语义为“接收 Hub 转发调用并本地验签”。
+- Node Server 语义为”接收 Hub 转发调用并本地验签”。
 
 这与本决议的 Phase 1 目标完全一致，无需新增实现即可作为 MVP 通讯基线。
+
+---
+
+## Amendment 1: Hub 传输层升级（2026-04-08）
+
+> 批准人：CVO | 参与者：宪宪(opus)、砚砚(codex)、gpt52 | 全票通过
+> 实施 spec：[F017-WS: Hub Dual-Transport](../features/F017-ws-dispatch.md)
+
+### 修订内容
+
+Phase 1 约束修订：
+
+- **保持不变**：Hub Relay 是唯一 invoke 路径。调用链仍为 `Node A → Hub → Node B`。L2 token 校验、scope enforcement、jti replay、cert revocation、audit trace 全部保留。
+- **新增**：Hub 到目标节点的”最后一跳”传输层，从仅支持 HTTP callback 扩展为支持 **outbound WebSocket + HTTP callback 双传输**。Hub dispatch 时 WS 优先，fallback callback。
+
+### 修订原因
+
+灰度测试暴露：HTTP callback 模型要求目标节点（如 plan-bridge）开放端口并对 Hub 可达。跨 NAT 场景（用户家庭网络、办公 WiFi）下 callback 不可达，需要 SSH 隧道 — 阻碍新成员上手，不可作为产品级方案。
+
+三猫独立评估后一致认为：在 Hub 层升级传输（而非在应用层如 pool-node 绕过 Hub）是更正确的方案，因为：
+1. 保持 Hub 治理中心地位，不在应用层复制治理逻辑
+2. 所有 mesh 节点受益，不只是 bridge
+3. 是 Hub Relay 的自然演进，不是 Phase 2 的直连
+
+### 不影响的约束
+
+- Phase 2 门槛不变 — 通用 node-to-node 直连（绕过 Hub）仍需满足 4 项门槛
+- 目标节点 L2 本地验签不变 — WS 模式下 INVOKE 帧仍携带 invocationToken
+- MeshClient 接口不变 — caller 侧零改动

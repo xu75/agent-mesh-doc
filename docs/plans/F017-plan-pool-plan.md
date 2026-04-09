@@ -164,7 +164,7 @@ export function createDatabase(path: string): PoolDatabase {
       name                     TEXT NOT NULL,
       provider_scope           TEXT NOT NULL,
       owner_member_id          TEXT NOT NULL,
-      default_borrow_limit_usd REAL NOT NULL DEFAULT 3.0,
+      default_borrow_limit_usd REAL NOT NULL DEFAULT 30.0,
       created_at               INTEGER NOT NULL
     );
 
@@ -934,7 +934,7 @@ describe('checkQuota', () => {
     })
     const result = checkQuota(poolDb.db, memberId)
     assert.ok(result.allowed)
-    assert.equal(result.availableUsd, 3.0) // default borrow limit
+    assert.equal(result.availableUsd, 30.0) // default borrow limit
   })
 
   it('rejects when quota exhausted', () => {
@@ -1848,10 +1848,10 @@ describe('Integration: team → invite → join → route → ledger → credit'
       lastOwnerActiveAt: 0, ownerIdleTimeout: 30 * 60 * 1000,
     })
 
-    // 5. Bob's quota check — should have $3 available (borrow limit)
+    // 5. Bob's quota check — should have $30 available (borrow limit)
     const q1 = checkQuota(poolDb.db, bobId)
     assert.ok(q1.allowed)
-    assert.equal(q1.availableUsd, 3.0)
+    assert.equal(q1.availableUsd, 30.0)
 
     // 6. Self-route deny: Alice cannot route to her own bridge
     const selfRoute = router.selectBridge({ callerId: aliceId, teamId, provider: 'claude', namespace: 'ns-1' })

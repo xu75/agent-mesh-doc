@@ -100,7 +100,7 @@ POOL_LEASE_EXPIRE_INTERVAL_MS=60000
 POOL_BINDING_CLEANUP_INTERVAL_MS=300000
 ```
 
-### bridge-cli (Contributor Machine)
+### bridge-cli (Contributor / Provider Credential Machine)
 
 > **Transport**: Bridge connects outbound to Hub via WebSocket (`/v1/ws`). No port
 > forwarding or SSH tunnel needed — bridge works from any network with outbound
@@ -108,9 +108,9 @@ POOL_BINDING_CLEANUP_INTERVAL_MS=300000
 
 ```bash
 # === Required ===
-MESH_HUB_URL=http://<hub-ip>:3010         # Hub address (loopback in grey release)
-POOL_NODE_URL=http://<hub-ip>:3011       # Pool-node address
-POOL_API_KEY=pool_<your-member-key>      # Your member API key
+MESH_HUB_URL=http://<hub-ip>:3010         # Hub address (reachable from credential machine via tunnel/relay in grey release)
+POOL_NODE_URL=http://<hub-ip>:3011        # Pool-node address
+POOL_API_KEY=pool_<your-member-key>       # Your member API key
 
 # === Optional (defaults shown) ===
 PLAN_BRIDGE_NODE_ID=plan-bridge-cli
