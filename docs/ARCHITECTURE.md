@@ -372,6 +372,7 @@ Before submitting a PR, answer these questions:
 |------|----------|---------------|
 | 2026-04-01 | [Hub MVP Communication Architecture](decisions/2026-04-01-mesh-hub-mvp-communication-architecture.md) | Phase 1 = Hub Relay only; Phase 2 needs 4 gates |
 | 2026-04-02 | [Repo Layout Governance](decisions/2026-04-02-repo-layout-governance.md) | packages/ vs bridges/ vs experiments/ classification |
+| 2026-04-09 | [Member-Scoped Bridge Identity](decisions/2026-04-09-member-scoped-bridge-identity.md) | Bridge ID server-assigned; UNIQUE(team, member, name); client default = hostname-random |
 
 ### Pending ADR Needed
 

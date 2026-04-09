@@ -538,16 +538,20 @@ CREATE TABLE invites (
 );
 
 -- Bridges：归属 team + owner
+-- ADR 2026-04-09: id 改为 server-assigned UUID；client_name 存 client 提供的名称
+-- UNIQUE(team_id, owner_member_id, client_name) 保证同 member 下名称唯一
 CREATE TABLE bridges (
-  id                      TEXT PRIMARY KEY,
+  id                      TEXT PRIMARY KEY,          -- server-generated UUID
   team_id                 TEXT NOT NULL REFERENCES teams(id),
   owner_member_id         TEXT NOT NULL REFERENCES members(id),
+  client_name             TEXT NOT NULL,              -- client 提供的 bridgeId（原 PLAN_BRIDGE_NODE_ID）
   share_mode              TEXT NOT NULL DEFAULT 'idle-only', -- off / idle-only / capped
   external_max_concurrency INTEGER NOT NULL DEFAULT 1,
   last_owner_active_at    INTEGER,
   attestation_hash        TEXT,                    -- bridge 二进制 hash（首次 pin）
   attestation_version     TEXT,
-  created_at              INTEGER NOT NULL
+  created_at              INTEGER NOT NULL,
+  UNIQUE(team_id, owner_member_id, client_name)
 );
 ```
 
