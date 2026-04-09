@@ -44,12 +44,11 @@ plan-bridge-cli 的 `PLAN_BRIDGE_NODE_ID` 默认值硬编码为 `"plan-bridge-cl
 - `install.sh` 自动生成唯一的 `PLAN_BRIDGE_NODE_ID` 写入 `.env`
 - `download.html` 手动安装说明同步更新
 
-### 4. API 字段重命名（无兼容性负担，系统未上线）
+### 4. API 兼容性
 
-- 注册接口字段 `bridgeId` → `clientName`（client 提供的名称）
-- 返回值字段 `bridgeId`（server-assigned UUID）
-- `RegisterBridgeInput.clientName` + `RegisterBridgeResult.bridgeId`
-- PoolRouter、Ledger、invocations 全部使用 server-assigned `bridgeId` 做路由和记账
+- 注册接口仍接受 `bridgeId` 字段（语义变为 client-provided name）
+- 返回值新增 `assignedBridgeId` 字段（server-assigned UUID）
+- PoolRouter、Ledger、invocations 全部使用 server-assigned ID 做路由和记账
 
 ## Consequences
 
@@ -66,8 +65,8 @@ plan-bridge-cli 的 `PLAN_BRIDGE_NODE_ID` 默认值硬编码为 `"plan-bridge-cl
 
 ### Neutral
 
-- `nodeId`（Hub 身份）和 `clientName`（Pool 注册名）在 client 侧仍使用同一个 `NODE_ID` 值
-- API 字段名从 `bridgeId` 改为 `clientName`（系统未上线，无兼容性负担）
+- `bridgeId` 和 `nodeId` 保持耦合（client 侧同一个值），仅在 pool 侧解耦为 server-assigned ID
+- 向后兼容：API 字段名不变，仅语义调整
 
 ## Affected Components
 

@@ -6,7 +6,7 @@ doc_kind: spec
 created: 2026-04-05
 layer: application
 owner_module: mesh-node
-status: spec
+status: complete
 phase: 1
 depends_on:
   - { id: F010, type: blocking }
@@ -16,7 +16,7 @@ evidence: []
 
 # F015: Resident Test Nodes（常驻测试节点）
 
-> **Status**: spec | **Owner**: 宪宪 | **Priority**: P1
+> **Status**: complete | **Owner**: 宪宪 | **Completed**: 2026-04-10
 
 ## Why
 
@@ -46,7 +46,7 @@ evidence: []
 - [x] AC-3: `mesh-echo.service` 和 `mesh-reviewer.service` 部署到服务器，`systemctl status` 显示 active
 - [x] AC-4: Hub 重启后（`systemctl restart mesh-hub`），两个测试节点在 30s 内自动恢复 online 状态（`PartOf` + `ExecStartPre=sleep 2`）
 - [x] AC-5: `/v1/directory` 能看到两个测试节点（重启前后均可见）
-- [ ] AC-6: 相关文档更新，说明测试节点的常驻用途
+- [x] AC-6: 相关文档更新，说明测试节点的常驻用途（echo-node.ts、reviewer-node.ts 均标注 resident + F015 ref；本 spec 标注 complete）
 
 ## Dependencies
 
@@ -73,3 +73,4 @@ evidence: []
 |------|------|
 | 2026-04-05 | 立项 |
 | 2026-04-05 | 实施：config 永久化 + systemd PartOf + identity 持久化 + 服务器部署验证 |
+| 2026-04-10 | AC-6 doc update + spec closed |
