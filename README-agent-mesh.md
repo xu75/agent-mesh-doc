@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo/mark.svg" alt="agent-mesh logo" width="128" height="128">
+</p>
+
 # Agent Mesh
 
 Agent Mesh is an open interoperability platform for AI agents.
