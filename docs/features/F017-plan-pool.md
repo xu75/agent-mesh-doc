@@ -960,18 +960,18 @@ Phase 3 (远期):
 ### P2 主线
 
 4. **Pure-LLM runtime profile**  
-   `--bare` 已从默认开启改为 `PLAN_BRIDGE_CLI_BARE=true` 可选（允许 bridge 在有 OAuth 登录的环境下免设 `ANTHROPIC_API_KEY`）。完整运行契约（child env allowlist、provider/base-url 隔离、chat-only profile）仍待定义。
+   `--bare` 已从默认开启改为 `PLAN_BRIDGE_CLI_BARE=true` 可选（允许 bridge 在有 OAuth 登录的环境下免设 `ANTHROPIC_API_KEY`）。~~完整运行契约（child env allowlist、provider/base-url 隔离、chat-only profile）仍待定义。~~ ✅ env allowlist + cwd 隔离已实现（`buildCleanEnv` allowlist + `cwd: tmpdir()`）。残留：`--bare` 模式下可替换默认 system prompt（当前 `--system-prompt` 为追加）。
 
 5. **Shared usage contract + provider-neutral consumption**  
    backlog 先作为单个 item 管理；实现阶段再拆成：
    - usage schema 契约（与 Cat Cafe/Clowder 对齐 model/tokens/cache/cost/contextWindow 语义）
    - admin/UI 语义（无 provider cost 时如何展示 observed cost / normalized cost / unavailable）
 
-### Legacy（后续独立立项）
+### ~~Legacy~~ ✅ 已完成
 
-6. **Response sanitization research**  
-   学习成熟项目是否采用返回清洗机制；评估过滤明显 `<tool_call>` 包装文本以降低噪音。  
-   说明：仅登记为遗留研究项，不纳入本轮 P0/P1/P2 实施范围。
+6. ~~**Response sanitization research**~~ ✅ **已实现**（2026-04-10）  
+   remote-bridge system prompt 注入 + `<tool_call>/<tool_result>` regex 净化（含未闭合标签）+ bridge 只返回净化后 `text`（pool 侧无 raw fallback）。  
+   commit: `5369c50 fix(F017): bridge output sanitization + env allowlist + cwd isolation`
 
 ### P3 记账
 
