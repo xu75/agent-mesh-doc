@@ -6,7 +6,7 @@ doc_kind: spec
 created: 2026-04-05
 layer: governance
 owner_module: mesh-hub
-status: spec
+status: complete
 phase: 2
 depends_on:
   - { id: F001, type: blocking }
@@ -16,7 +16,7 @@ evidence: []
 
 # F013: Open Node Registration（动态节点注册）
 
-> Status: spec | Owner: TBD
+> Status: complete | Owner: 宪宪 | Completed: 2026-04-10
 > Evolved from: F012 (Phase 2 "Self-service 准入")
 
 ## Why
@@ -58,13 +58,13 @@ Hub 支持**可配置的注册策略**，新节点可以运行时自注册，不
 
 ## Acceptance Criteria
 
-- [ ] AC-1: Hub 配置 `registrationMode: "open"` 后，新节点仅凭 nodeId + publicKey + proof 即可 HELLO 成功注册。
-- [ ] AC-2: 动态注册的节点在 CAPS 和 /v1/directory 中可见，skills 与注册时声明一致。
-- [ ] AC-3: `whitelist` 模式行为不变（向后兼容），未知节点仍返回 403。
-- [ ] AC-4: 重复 nodeId 注册（不同 publicKey）被拒绝，返回语义化错误码。
-- [ ] AC-5: `/v1/discovery` 的 `registration.mode` 反映实际配置值。
-- [ ] AC-6: 动态注册的节点 maxScopes 不超过 config 的 `defaultMaxScopes` 上限。
-- [ ] AC-7: 注册事件可审计（`NODE_REGISTERED` 事件包含 nodeId、publicKey、capabilities、timestamp）。
+- [x] AC-1: Hub 配置 `registrationMode: "open"` 后，新节点仅凭 nodeId + publicKey + proof 即可 HELLO 成功注册。
+- [x] AC-2: 动态注册的节点在 CAPS 和 /v1/directory 中可见，skills 与注册时声明一致（HELLO body 中提供 `capabilities` 字段即可）。
+- [x] AC-3: `whitelist` 模式行为不变（向后兼容），未知节点仍返回 403。
+- [x] AC-4: 重复 nodeId 注册（不同 publicKey）被拒绝，返回语义化错误码。
+- [x] AC-5: `/v1/discovery` 的 `registration.mode` 反映实际配置值。
+- [x] AC-6: 动态注册的节点 maxScopes 不超过 config 的 `defaultMaxScopes` 上限（请求超限 scope 时 TOKEN 返回 403）。
+- [x] AC-7: 注册事件可审计（`NODE_REGISTERED` 事件包含 nodeId、publicKey、capabilities、timestamp，仅首次注册触发）。
 
 ## Dependencies
 
