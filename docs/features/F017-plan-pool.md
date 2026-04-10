@@ -17,6 +17,7 @@ evidence:
   - { type: pr, ref: "#16", merged: "2026-04-07", title: "feat(F017): Plan Pool Phase 1.5 — team mutual-aid MVP" }
   - { type: pr, ref: "#17", merged: "2026-04-08", title: "feat(F017): grey release prep — bootstrap protection + admin/join pages + source install" }
   - { type: pr, ref: "#18", merged: "2026-04-08", title: "fix(F017): grey release hotfix — CLI verbose, response cleanup, ws:// drift, HTTP join fix" }
+  - { type: pr, ref: "#30", merged: "2026-04-11", title: "feat(F017): P1 public API entry normalization + attestation re-approve" }
 roundtable: docs/discussions/F017-plan-pool-roundtable.md
 ---
 
@@ -884,7 +885,7 @@ Phase 1.5 补丁 (grey release 暴露的运维缺口):
   P1: bridge→pool 周期性重注册（pool 重启/网络闪断后自动恢复）
   P2: bridge child env 白名单/隔离（隔离 ANTHROPIC_BASE_URL 等 provider 变量，防污染）
   P2: attested binary = executed binary（resolvedBinary 传入 handler，消除 hash/spawn 不一致）
-  P2: admin attestation 审批 API（PUT /v1/admin/bridges/:id/approve-attestation）
+  ~~P2: admin attestation 审批 API（PUT /v1/admin/bridges/:id/approve-attestation）~~ → **Done** PR #30
   ~~P2: bridge ↔ pool-node 长连接/relay~~ → **Done**: Hub dual-transport (F017-WS) 已实现 outbound WS，SSH 隧道已消除
 
 Phase 2 (F017 扩展):
