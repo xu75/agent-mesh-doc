@@ -6,19 +6,21 @@ doc_kind: spec
 created: 2026-04-05
 layer: governance
 owner_module: mesh-hub
-status: spec
+status: review
 phase: 2
 depends_on:
   - { id: F001, type: blocking }
   - { id: F012, type: blocking }
   - { id: F013, type: related }
-evidence: []
+evidence:
+  - packages/mesh-hub/src/hybrid-routing.test.ts
+  - packages/mesh-node/src/hybrid-routing.test.ts
 adr_override: "F014 spec L87 放宽了 ADR Phase 2 门槛第1条（铲屎官判断），需正式更新 ADR"
 ---
 
 # F014: Hybrid Routing — Direct URL + Hub Relay（混合路由）
 
-> Status: spec | Owner: TBD
+> Status: review | Owner: 砚砚
 > Related ADR: `docs/decisions/2026-04-01-mesh-hub-mvp-communication-architecture.md`
 
 ## Why
@@ -76,13 +78,13 @@ Hub 支持**混合路由模式**：节点注册时声明是否有独立可达 UR
 
 ## Acceptance Criteria
 
-- [ ] AC-1: 节点配置 `directUrl` 后，CAPS 返回该字段（仅已认证节点可见）。
-- [ ] AC-2: `/v1/directory` 返回 `routingMode: "direct"` 或 `"relay"`（不暴露 URL）。
-- [ ] AC-3: `MeshClient.invoke()` 对有 `directUrl` 的目标自动走直连，跳过 Hub 数据中转。
-- [ ] AC-4: 直连失败时自动回退到 Hub relay，调用方无感知。
-- [ ] AC-5: 直连模式下 L2 token 在目标节点本地验证通过（与 relay 模式安全等级一致）。
-- [ ] AC-6: 直连调用完成后 Hub 审计日志有记录（traceId + 调用结果摘要）。
-- [ ] AC-7: 无 `directUrl` 的节点行为不变（纯 relay，向后兼容）。
+- [x] AC-1: 节点配置 `directUrl` 后，CAPS 返回该字段（仅已认证节点可见）。
+- [x] AC-2: `/v1/directory` 返回 `routingMode: "direct"` 或 `"relay"`（不暴露 URL）。
+- [x] AC-3: `MeshClient.invoke()` 对有 `directUrl` 的目标自动走直连，跳过 Hub 数据中转。
+- [x] AC-4: 直连失败时自动回退到 Hub relay，调用方无感知。
+- [x] AC-5: 直连模式下 L2 token 在目标节点本地验证通过（与 relay 模式安全等级一致）。
+- [x] AC-6: 直连调用完成后 Hub 审计日志有记录（traceId + 调用结果摘要）。
+- [x] AC-7: 无 `directUrl` 的节点行为不变（纯 relay，向后兼容）。
 
 ## Dependencies
 
