@@ -6,19 +6,23 @@ doc_kind: spec
 created: 2026-04-02
 layer: application
 owner_module: bridge-tts
-status: spec
+status: complete
 phase: 1
 depends_on:
   - { id: F002, type: blocking }
   - { id: F010, type: blocking }
   - { id: F013, type: related }
   - { id: F014, type: related }
-evidence: []
+evidence:
+  - { type: test, ref: "packages/bridge-tts/src/e2e.test.ts", note: "AC-1/2/3/4 e2e" }
+  - { type: test, ref: "packages/bridge-tts/src/handler.test.ts", note: "scope/semantic error payload" }
+  - { type: test, ref: "packages/bridge-tts/src/synthesizer.test.ts", note: "runtime contract + trace header + retry" }
+  - { type: example, ref: "examples/tts-bridge/README.md", note: "one-command start + one-command invoke" }
 ---
 
 # F011: Local TTS Bridge Example
 
-> Status: spec | Owner: 砚砚
+> Status: complete | Owner: 砚砚
 
 ## Why
 
@@ -62,11 +66,11 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- [ ] AC-1: `bridge-tts` 通过标准 `HELLO + heartbeat` 路径完成注册，Hub `CAPS` 可见 `tts.synthesize` 且状态在线。
-- [ ] AC-2: 远端 Agent 通过 mesh invoke 成功拿到可播放音频结果（URL 或 base64）。
-- [ ] AC-3: scope 不足时返回可审计拒绝事件（非 500，语义化错误码）。
-- [ ] AC-4: 端到端 traceId 可追踪（caller/hub/bridge/runtime 全链路可对齐）。
-- [ ] AC-5: 文档提供“一条命令启动 + 一条命令调用”的最小复现步骤。
+- [x] AC-1: `bridge-tts` 通过标准 `HELLO + heartbeat` 路径完成注册，Hub `CAPS` 可见 `tts.synthesize` 且状态在线。
+- [x] AC-2: 远端 Agent 通过 mesh invoke 成功拿到可播放音频结果（URL 或 base64）。
+- [x] AC-3: scope 不足时返回可审计拒绝事件（非 500，语义化错误码）。
+- [x] AC-4: 端到端 traceId 可追踪（caller/hub/bridge/runtime 全链路可对齐）。
+- [x] AC-5: 文档提供“一条命令启动 + 一条命令调用”的最小复现步骤。
 
 ## Dependencies
 
@@ -91,6 +95,17 @@ Out of scope:
 - 本地模型资源压力（CPU/GPU/内存）导致调用抖动
 - 音频结果格式不统一导致调用方接入成本上升
 - 本地运行时包装层与可发布桥接层边界不清，造成目录治理回退
+
+## Delivery Evidence (2026-04-10)
+
+- `pnpm --filter @agent-mesh/bridge-tts build`
+- `pnpm --filter @agent-mesh/bridge-tts test`
+- `pnpm --filter @agent-mesh/bridge-tts lint`
+- `packages/bridge-tts/src/e2e.test.ts` 新增端到端用例，覆盖 AC-1/2/3/4：
+  - HELLO + heartbeat 后 CAPS 可见 `tts.synthesize` 且状态 `online`
+  - caller invoke `tts.synthesize` 成功返回音频 payload
+  - 非 `tts` scope 返回语义化错误 `SCOPE_INSUFFICIENT`（非 500）
+  - runtime 收到的 `x-trace-id` 与 invoke result `traceId` 对齐
 
 ## Post-Delivery TODO (Ops Hardening)
 
