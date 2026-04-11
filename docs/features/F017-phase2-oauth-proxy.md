@@ -379,7 +379,7 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - [ ] 503 `session_expired` 错误响应
 
 **验收标准**：
-- [ ] AC-P2-07: oauth-proxy bridge 注册时上报 capabilities
+- [x] AC-P2-07: oauth-proxy bridge 注册时上报 capabilities
 - [ ] AC-P2-08: gateway 将 tool_use 请求路由到 oauth/api bridge，不路由到 cli bridge
 - [ ] AC-P2-09: session 硬绑定: 同一 session 的请求始终走同一 bridge
 - [ ] AC-P2-10: bridge 离线 → 503 session_expired（不 fallback 到其他 bridge）
