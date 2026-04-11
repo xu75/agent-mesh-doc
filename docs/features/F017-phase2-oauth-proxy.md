@@ -6,7 +6,7 @@ doc_kind: spec
 created: 2026-04-11
 layer: application
 owner_module: plan-pool, plan-bridge-oauth
-status: draft
+status: in-progress
 phase: 2
 depends_on:
   - { id: F017-phase-1.5, type: blocking, note: "Phase 1.5 的 team/credit/ledger/routing/circuit-breaker 全部复用" }
@@ -19,7 +19,7 @@ references:
 
 # F017 Phase 2: OAuth Proxy Bridge — Claude Code 全功能兼容
 
-> Status: **draft** | Owner: TBD
+> Status: **in-progress** | Owner: opus
 
 ## 1. 目标
 
@@ -330,38 +330,42 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - D5: B+（读为主 + 兜底刷新）— eventual consistency 语义，CVO 批准 2026-04-11
 - D6: WS 隧道（方案 C'）— CVO 决策，token 不离开 bridge
 
-### 6.1 Phase 1A: Transport + Proxy
+### 6.1 Phase 1A: Transport + Proxy ✅
 
 **目标**：单 bridge 能代理 Claude Code 请求到 Anthropic 并返回（含 streaming）。
 
 **任务**：
-- [ ] 新增 `packages/plan-bridge-oauth/` 
+- [x] 新增 `packages/plan-bridge-oauth/` 
   - `src/token-manager.ts` — TokenProvider 实现（B+ 四层护栏）
   - `src/proxy.ts` — HTTP reverse proxy + streaming pipe
   - `src/bridge.ts` — A2A 注册 + 心跳 + capability 声明
   - `src/env-normalizer.ts` — `<env>` block 替换（Phase 1C 引用）
-- [ ] TokenProvider: Keychain 读取 + grace period + 兜底刷新 + 写回 + 401 recovery
-- [ ] WS streaming 帧协议（D6 C'，mesh transport 升级）：
+- [x] TokenProvider: Keychain 读取 + grace period + 兜底刷新 + 写回 + 401 recovery
+- [x] WS streaming 帧协议（D6 C'，mesh transport 升级）：
   - `mesh-hub/src/hub.ts` — 新增 streaming frame 处理（proxy-sse-chunk / proxy-end / proxy-error）
   - `mesh-hub/src/ws-registry.ts` — 从 unary PendingInvocation 扩展为 streaming session
   - `mesh-node/src/ws-channel.ts` — 新增 streaming frame 收发
   - `mesh-node/src/client.ts` — 新增 streaming invoke path（替代 unary `client.invoke()`）
-- [ ] Proxy: token 注入 + body passthrough + SSE streaming
-- [ ] Usage 提取: TransformStream tee
-- [ ] `/v1/messages/count_tokens` 透传
+- [x] Proxy: token 注入 + body passthrough + SSE streaming
+- [x] Usage 提取: TransformStream tee
+- [x] `/v1/messages/count_tokens` 透传
 
 **验收标准**：
-- [ ] AC-P2-01: bridge 启动后自动读取本地 OAuth token
-- [ ] AC-P2-02: 非流式请求: Claude Code → bridge → Anthropic → 正确响应
-- [ ] AC-P2-03: 流式请求: SSE 全程 pipe，client 实时收到 chunk
-- [ ] AC-P2-04: tool_use blocks 正确透传（bridge 不解析/不执行）
-- [ ] AC-P2-05: usage 数据正确提取并上报
+- [x] AC-P2-01: bridge 启动后自动读取本地 OAuth token
+- [x] AC-P2-02: 非流式请求: Claude Code → bridge → Anthropic → 正确响应
+- [x] AC-P2-03: 流式请求: SSE 全程 pipe，client 实时收到 chunk
+- [x] AC-P2-04: tool_use blocks 正确透传（bridge 不解析/不执行）
+- [x] AC-P2-05: usage 数据正确提取并上报
 - [ ] AC-P2-06: owner CLI 在线时 bridge 只读 token 不刷新，CLI 刷新后 bridge 30s 内拿到新 token
 - [ ] AC-P2-22: owner CLI 离线 + token 过期 + grace period 2min → bridge 兜底刷新并写回 Keychain
-- [ ] AC-P2-23: 请求遇 401 → 重读 Keychain + 重试一次 → 仍失败才标 unhealthy
-- [ ] AC-P2-16: `/v1/messages/count_tokens` 透传到 Anthropic，正确返回 token 计数
-- [ ] AC-P2-17: client 断开 → gateway 发送 `proxy-abort` → bridge 用 AbortController 取消上游 fetch
-- [ ] AC-P2-18: `proxy-request` 发出后 N 秒无首帧 → gateway 返回 504 Gateway Timeout
+- [x] AC-P2-23: 请求遇 401 → 重读 Keychain + 重试一次 → 仍失败才标 unhealthy
+- [x] AC-P2-16: `/v1/messages/count_tokens` 透传到 Anthropic，正确返回 token 计数
+- [x] AC-P2-17: client 断开 → gateway 发送 `proxy-abort` → bridge 用 AbortController 取消上游 fetch
+- [x] AC-P2-18: `proxy-request` 发出后 N 秒无首帧 → gateway 返回 504 Gateway Timeout
+
+| 日期 | 事件 |
+|---|---|
+| 2026-04-11 | Phase 1A merged (PR #41) — WS transport + proxy bridge + gateway routing |
 
 ### 6.2 Phase 1B: Routing + Hard-fail
 
