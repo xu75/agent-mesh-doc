@@ -356,8 +356,8 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - [x] AC-P2-03: 流式请求: SSE 全程 pipe，client 实时收到 chunk
 - [x] AC-P2-04: tool_use blocks 正确透传（bridge 不解析/不执行）
 - [x] AC-P2-05: usage 数据正确提取并上报
-- [ ] AC-P2-06: owner CLI 在线时 bridge 只读 token 不刷新，CLI 刷新后 bridge 30s 内拿到新 token
-- [ ] AC-P2-22: owner CLI 离线 + token 过期 + grace period 2min → bridge 兜底刷新并写回 Keychain
+- [x] AC-P2-06: owner CLI 在线时 bridge 只读 token 不刷新，CLI 刷新后 bridge 30s 内拿到新 token
+- [x] AC-P2-22: owner CLI 离线 + token 过期 + grace period 2min → bridge 兜底刷新并写回 Keychain
 - [x] AC-P2-23: 请求遇 401 → 重读 Keychain + 重试一次 → 仍失败才标 unhealthy
 - [x] AC-P2-16: `/v1/messages/count_tokens` 透传到 Anthropic，正确返回 token 计数
 - [x] AC-P2-17: client 断开 → gateway 发送 `proxy-abort` → bridge 用 AbortController 取消上游 fetch
@@ -366,6 +366,7 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 | 日期 | 事件 |
 |---|---|
 | 2026-04-11 | Phase 1A merged (PR #41) — WS transport + proxy bridge + gateway routing |
+| 2026-04-12 | Phase 1A complete — AC-P2-06 (#43), AC-P2-22 (#44) token guardrail tests |
 
 ### 6.2 Phase 1B: Routing + Hard-fail
 
