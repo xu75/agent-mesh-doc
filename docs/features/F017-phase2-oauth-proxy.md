@@ -448,7 +448,7 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 **验收标准**：
 - [ ] AC-P2-23: `plan-bridge-oauth bootstrap` 采集当前环境生成有效 fingerprint profile
 - [ ] AC-P2-24: 真实 Claude Code session 通过 pool + bridge 完成 Read/Write/Bash
-- [ ] AC-P2-25: Bridge 首次 profile 验证成功后自动从 warn 升级到 strict
+- [ ] AC-P2-25: Bridge 首次 profile 验证成功后自动从 warn 升级到 strict（含持久化，重启不回退）
 
 **详细计划**：见 `docs/plans/F017-phase2-1D-bootstrap-prod.md`
 
