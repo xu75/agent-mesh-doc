@@ -446,9 +446,9 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - [ ] bootstrap-warn → strict 自动策略转换（含 `_meta.policyState` 持久化）
 
 **验收标准**：
-- [ ] AC-P2-23: `plan-bridge-oauth bootstrap` 采集当前环境生成 fingerprint profile（环境字段完整，SDK 字段待回填，无 LKG 副本）
+- [x] AC-P2-23: `plan-bridge-oauth bootstrap` 采集当前环境生成 fingerprint profile（环境字段完整，SDK 字段待回填，无 LKG 副本）
 - [ ] AC-P2-24: 真实 Claude Code session 通过 pool + bridge 完成 Read/Write/Bash
-- [ ] AC-P2-25: Bridge 首次 profile 验证成功后自动从 warn 升级到 strict（含持久化，重启不回退）
+- [x] AC-P2-25: Bridge 首次 profile 验证成功后自动从 warn 升级到 strict（含持久化，重启不回退）
 
 **关键设计决策（经 3 轮 review 确定）**：
 
