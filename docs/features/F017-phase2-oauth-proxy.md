@@ -441,14 +441,29 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 **目标**：从"测试通过"到"生产可用"——自动化指纹采集、真实 E2E 验证、策略自动升级。
 
 **任务**：
-- [ ] 指纹 profile bootstrap CLI: 采集当前环境生成 `fingerprint-profile.json`
+- [ ] 指纹 profile bootstrap CLI: 采集当前环境生成 partial `fingerprint-profile.json`，SDK 字段由受信校准回填
 - [ ] 真实 Claude Code E2E: pool + bridge 全栈部署，真实 API 请求验证
-- [ ] bootstrap-warn → strict 自动策略转换
+- [ ] bootstrap-warn → strict 自动策略转换（含 `_meta.policyState` 持久化）
 
 **验收标准**：
-- [ ] AC-P2-23: `plan-bridge-oauth bootstrap` 采集当前环境生成有效 fingerprint profile
+- [ ] AC-P2-23: `plan-bridge-oauth bootstrap` 采集当前环境生成 fingerprint profile（环境字段完整，SDK 字段待回填，无 LKG 副本）
 - [ ] AC-P2-24: 真实 Claude Code session 通过 pool + bridge 完成 Read/Write/Bash
 - [ ] AC-P2-25: Bridge 首次 profile 验证成功后自动从 warn 升级到 strict（含持久化，重启不回退）
+
+**关键设计决策（经 3 轮 review 确定）**：
+
+1. **受信校准回填**（替代开放式 first-request backfill）：
+   - Bootstrap 生成 partial profile + 一次性校准 nonce（`_meta.bootstrapNonce`）
+   - 回填仅在请求携带匹配 nonce 且在 5 分钟窗口内时触发（三重约束：nonce 验证 + 一次性消耗 + 时间窗口）
+   - `--calibrate` 模式自动发送校准请求；nonce 输出默认掩码显示
+
+2. **LKG 语义约束**：
+   - Partial profile（preflight.ok=false）禁止写入 `.last-known-good`
+   - LKG 仅在回填完成且 preflight.ok=true 后写入
+
+3. **策略持久化**：
+   - 升级时写入 `_meta.policyState: "strict"` + `verifiedAt` 到 profile JSON
+   - 重启时读取 `_meta`：有 strict + preflight.ok → strict 启动；profile 损坏 → LKG + warn 降级
 
 **详细计划**：见 `docs/plans/F017-phase2-1D-bootstrap-prod.md`
 
