@@ -9,7 +9,7 @@
 - [x] AC4: 时间、额度、速率限制是 AND 关系：全部满足才可调用
 - [x] AC5: 5H/1W 滚动窗口速率限制：按金额控制，超限返回 429 + Retry-After
 - [x] AC6: Admin 端可设每个成员的 5H/1W 限额（金额），也可设团队默认值
-- [x] AC7: suspend/expire 时立即从路由表摘除成员 bridge（不等心跳超时）
+- [x] AC7: suspend 时立即从路由表摘除成员 bridge；expire 仅阻止 invoke，不摘除 bridge（允许继续贡献）
 - [x] AC8: 成员用 API key 可登录 `/member` 查看 effectiveStatus
 - [x] AC9: Member 端显示 quota $（available/total）+ per-call $，5H/7D 窗口显示百分比
 - [x] AC10: 成员可看到自己的调用历史和用量统计

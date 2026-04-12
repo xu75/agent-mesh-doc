@@ -66,7 +66,7 @@ Plan Pool Phase 1.5 (F017) 的管理面板是 MVP 级别：owner 能看成员列
   - `canAdmin`: active + role=owner
   - `canReadSelf`: active（即使 expired 也允许，保留自服务只读入口）
 - 信用检查: `checkQuota()` 增加 `expires_at` 校验，区分 `EXPIRED`(403) 和 `QUOTA_EXHAUSTED`(402)
-- Bridge 联动: suspend/expire 时立即调用 `PoolRouter.evictMemberBridges(memberId)` 从路由表摘除，不等心跳超时
+- Bridge 联动: suspend 时立即调用 `PoolRouter.evictMemberBridges(memberId)` 从路由表摘除；expire 仅阻止 invoke，不摘除 bridge（允许继续贡献赚取额度）
 - 邀请码生成时可设默认成员有效期
 
 #### P0-3: 滚动窗口速率限制（5H + 1W）
@@ -213,7 +213,7 @@ const bucketStart7d = nowDay - 6 * 86400_000; // 含当天共 7 个自然天
 - [x] 时间、额度、速率限制是 AND 关系：全部满足才可调用
 - [x] 5H/1W 滚动窗口速率限制：按金额控制，超限返回 429 + Retry-After
 - [x] Admin 端可设每个成员的 5H/1W 限额（金额），也可设团队默认值
-- [x] suspend/expire 时立即从路由表摘除成员 bridge（不等心跳超时）
+- [x] suspend 时立即从路由表摘除成员 bridge；expire 仅阻止 invoke，不摘除 bridge（允许继续贡献）
 - [x] 成员用 API key 可登录 `/member` 查看 effectiveStatus
 - [x] Member 端显示 quota $（available/total）+ per-call $，5H/7D 窗口显示百分比
 - [x] 成员可看到自己的调用历史和用量统计
@@ -254,7 +254,7 @@ const bucketStart7d = nowDay - 6 * 86400_000; // 含当天共 7 个自然天
 | 过期 vs suspend | **分离**：expires_at 是时间门槛，status 是人工硬状态 | 合并会污染状态机、阻断自服务面板 |
 | 鉴权模型 | 拆为 `canInvoke/canRegisterBridge/canAdmin/canReadSelf` | 过期成员需要 `/v1/me` 只读入口 |
 | 错误码映射 | `suspended/expired` → 403, `quota_exhausted` → 402, `rate_limited` → 429+Retry-After | HTTP 状态码与 effectiveStatus 解耦（@gpt52 review） |
-| Bridge 联动 | suspend/expire 时立即从 router 摘除 | 否则有 ~2 分钟路由泄漏窗口 |
+| Bridge 联动 | suspend 时立即从 router 摘除；expire 不摘除（允许继续贡献） | suspend 是硬封禁；expire 只限消费不限贡献 |
 | Reactivate + Key | 分离操作，reactivate 不自动发新 key | 时间到期不 revoke key，延长 expires_at 即可恢复 |
 | In-flight 请求 | 已放行的请求允许跑完，不中途 kill | 最小化对用户的干扰 |
 
