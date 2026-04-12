@@ -1587,7 +1587,7 @@ app.get("/member", async (_req, reply) => serveFile("member.html", reply));
 - L2 三个小卡独立展示 quotaPercent / rateLimitPercent5h / rateLimitPercent7d
 - L4 用 CSS 柱状图（div 高度按比例），数据来自 `GET /v1/me/usage`
 - L5 调用列表来自 `GET /v1/me/invocations`
-- 所有百分比展示，不暴露金额
+- Quota 和 per-call 显示 $，5H/7D 窗口显示百分比
 
 **Step 3: index.html — 添加 Member Dashboard 链接**
 

@@ -72,7 +72,7 @@ Plan Pool Phase 1.5 (F017) 的管理面板是 MVP 级别：owner 能看成员列
 #### P0-3: 滚动窗口速率限制（5H + 1W）
 
 > 铲屎官场景：1 个 Max 订阅分给 5 个成员，每人 ≈ Pro 级别速率，防止一个人用光所有额度。
-> 参考 Claude（消息/5小时）和 OpenAI（TPM/RPM），按金额控制，成员端只显示百分比。
+> 参考 Claude（消息/5小时）和 OpenAI（TPM/RPM），按金额控制。成员端 quota 和 per-call 显示 $，5H/7D 窗口显示百分比。
 
 **数据模型：**
 ```sql
@@ -122,7 +122,7 @@ const bucketStart7d = nowDay - 6 * 86400_000; // 含当天共 7 个自然天
 **Member 端（@gemini25 木桶效应仪表盘）：**
 - 主视觉只展示**当前最接近耗尽的限制**作为大进度条
 - 其他健康指标折叠为小 Badge
-- 不暴露金额，只显示百分比
+- Quota 和 per-call 显示 $，5H/7D 窗口显示百分比
 
 **effectiveStatus 优先级（按恢复难度降序，@gemini25）：**
 `suspended > expired > quota_exhausted > rate_limited_weekly > rate_limited_5h > active`
@@ -169,7 +169,7 @@ const bucketStart7d = nowDay - 6 * 86400_000; // 含当天共 7 个自然天
 信息层次设计（@gemini25 建议）：
 - **L1 Hero Card（木桶效应 @gemini25 + 恢复时间 @gpt52）**:
   - 主状态：可用/不可用 + 主阻塞原因 + **预计恢复时间**（"约 2 小时后恢复"）
-  - 成员端不显示金额，百分比也不够 — 必须补"何时恢复"才有行动意义
+  - Quota 和 per-call 显示 $，5H/7D 窗口显示百分比 — 必须补"何时恢复"才有行动意义
 - **L2 三小卡**: 总额度% / 5H窗口% / 7D窗口%（含"进行中请求预留"说明）
 - **L3 凭证**: Credential 状态 + 最后轮换时间 + 接入文档快速入口（不回显 API key，DB 只存 hash，@gpt52）
 - **L4 用量趋势**: 最近 7 天消耗趋势（CSS 柱状图或轻量 Chart.js）
