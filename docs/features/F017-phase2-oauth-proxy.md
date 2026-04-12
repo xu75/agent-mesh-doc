@@ -367,16 +367,17 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 |---|---|
 | 2026-04-11 | Phase 1A merged (PR #41) — WS transport + proxy bridge + gateway routing |
 | 2026-04-12 | Phase 1A complete — AC-P2-06 (#43), AC-P2-22 (#44) token guardrail tests |
+| 2026-04-12 | Phase 1B merged — capability routing, hard-fail, auth unhealthy, session affinity (PR #47) |
 
 ### 6.2 Phase 1B: Routing + Hard-fail
 
 **目标**：pool 层集成，多 bridge 路由正确，session 硬绑定生效。
 
 **任务**：
-- [ ] Gateway 改造: bridge 类型分发 + `x-api-key` 认证 + header 分类透传
-- [ ] Bridge capability 声明 + gateway 能力路由
-- [ ] `Pool.selectBridge()` hard-fail 语义（binding 失效 → 503，不 fallback）
-- [ ] 503 `session_expired` 错误响应
+- [x] Gateway 改造: bridge 类型分发 + `x-api-key` 认证 + header 分类透传
+- [x] Bridge capability 声明 + gateway 能力路由
+- [x] `Pool.selectBridge()` hard-fail 语义（binding 失效 → 503，不 fallback）
+- [x] 503 `session_expired` 错误响应
 
 **验收标准**：
 - [x] AC-P2-07: oauth-proxy bridge 注册时上报 capabilities
