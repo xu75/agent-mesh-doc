@@ -208,3 +208,11 @@ All must pass:
 3. `pnpm --filter @agent-mesh/plan-bridge-oauth lint`
 4. `pnpm --filter @agent-mesh/plan-pool lint`
 5. Explicit evidence artifact for AC-P2-15 (logs or snapshot report)
+
+## Execution Status (2026-04-12)
+
+1. AC-P2-12/13/14 已完成并保持回归通过。
+2. AC-P2-15 已补 through-pool 多轮集成验证（Read -> Write -> Bash(stream) + sticky session）。
+3. 指纹定时刷新与 runtime drift 检测已落地（bridge 启动+定时刷新，检测漂移时触发刷新）。
+4. fingerprint suspension 已接入 pool 路由门禁（`fingerprintHealthy=false` 时返回 `FINGERPRINT_UNHEALTHY`，停止新路由）。
+5. Exit gate 已通过：`plan-bridge-oauth` 与 `plan-pool` 的 test/lint 全绿。

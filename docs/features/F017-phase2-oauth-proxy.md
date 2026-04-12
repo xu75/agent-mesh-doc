@@ -370,6 +370,7 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 | 2026-04-12 | Phase 1B merged — capability routing, hard-fail, auth unhealthy, session affinity (PR #47) |
 | 2026-04-12 | Phase 1C strategy freeze — fingerprint preflight/suspend/auto-refresh + local E2E baseline |
 | 2026-04-12 | Phase 1C partial — env-normalizer, header/body fingerprint, LKG fallback, preflight guard (AC-P2-12/13/14); E2E + drift refresh pending |
+| 2026-04-12 | Phase 1C complete — through-pool R/W/Bash sticky integration test + periodic refresh/drift detection + fingerprint route suspension |
 
 ### 6.2 Phase 1B: Routing + Hard-fail
 
@@ -399,14 +400,14 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - [x] Header 层指纹: bridge 自生成 UA + x-stainless-*（参考 cc-gateway）
 - [x] Body 层指纹: `<env>` block 替换为 owner 环境信息（参考 cc-gateway）
 - [x] 指纹失败防护: preflight 校验 + 失败熔断（防高频异常上游请求）
-- [ ] 指纹漂移处理: 定时自动刷新 + 漂移检测（`last-known-good` 回滚已完成，定时刷新/漂移检测待实现）
-- [ ] E2E 验证: Claude Code CLI 通过 pool 完成 tool use + streaming + multi-turn（当前仅有 proxy 层 mock-fetch 测试）
+- [x] 指纹漂移处理: 启动/定时自动刷新 + 漂移检测 + `last-known-good` 回滚
+- [x] E2E 验证: through-pool Read + Write + Bash + streaming + multi-turn sticky 集成测试
 
 **验收标准**：
 - [x] AC-P2-12: 出站请求 User-Agent / x-stainless-* 与 owner 环境一致
 - [x] AC-P2-13: 出站请求 body 中 `<env>` block 描述 owner 环境，非 caller 环境
 - [x] AC-P2-14: 非 Claude Code caller（无 `<env>` block）请求不被修改
-- [ ] AC-P2-15: Claude Code E2E: Read + Write + Bash tool use 完整工作流通过（需 through-pool 集成测试）
+- [x] AC-P2-15: Claude Code E2E: Read + Write + Bash tool use 完整工作流通过（through-pool 集成测试）
 
 **Phase 1C 策略冻结（2026-04-12, CVO 批准）**：
 
