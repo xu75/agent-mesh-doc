@@ -371,6 +371,7 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 | 2026-04-12 | Phase 1C strategy freeze — fingerprint preflight/suspend/auto-refresh + local E2E baseline |
 | 2026-04-12 | Phase 1C partial — env-normalizer, header/body fingerprint, LKG fallback, preflight guard (AC-P2-12/13/14); E2E + drift refresh pending |
 | 2026-04-12 | Phase 1C complete — through-pool R/W/Bash sticky integration test + periodic refresh/drift detection + fingerprint route suspension |
+| 2026-04-12 | Phase 1D kickoff — bootstrap CLI + real E2E validation + auto policy transition |
 
 ### 6.2 Phase 1B: Routing + Hard-fail
 
@@ -435,7 +436,23 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - 将 availability-first 的“无鉴权 fallback 转发”引入到本链路。
 - 让 fallback 资产长期替代真实采集数据。
 
-### 6.4 Phase 2: 增强（按需）
+### 6.4 Phase 1D: Bootstrap & Production Validation
+
+**目标**：从"测试通过"到"生产可用"——自动化指纹采集、真实 E2E 验证、策略自动升级。
+
+**任务**：
+- [ ] 指纹 profile bootstrap CLI: 采集当前环境生成 `fingerprint-profile.json`
+- [ ] 真实 Claude Code E2E: pool + bridge 全栈部署，真实 API 请求验证
+- [ ] bootstrap-warn → strict 自动策略转换
+
+**验收标准**：
+- [ ] AC-P2-23: `plan-bridge-oauth bootstrap` 采集当前环境生成有效 fingerprint profile
+- [ ] AC-P2-24: 真实 Claude Code session 通过 pool + bridge 完成 Read/Write/Bash
+- [ ] AC-P2-25: Bridge 首次 profile 验证成功后自动从 warn 升级到 strict
+
+**详细计划**：见 `docs/plans/F017-phase2-1D-bootstrap-prod.md`
+
+### 6.5 Phase 2: 增强（按需）
 
 - [ ] 多账号 failover（bridge 内部管理多 token）
 - [ ] CLI bridge 改进: Anthropic chat-subset 适配
