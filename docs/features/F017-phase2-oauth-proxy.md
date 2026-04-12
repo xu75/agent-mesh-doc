@@ -380,13 +380,13 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 
 **验收标准**：
 - [x] AC-P2-07: oauth-proxy bridge 注册时上报 capabilities
-- [ ] AC-P2-08: gateway 将 tool_use 请求路由到 oauth/api bridge，不路由到 cli bridge
-- [ ] AC-P2-09: session 硬绑定: 同一 session 的请求始终走同一 bridge
-- [ ] AC-P2-10: bridge 离线 → 503 session_expired（不 fallback 到其他 bridge）
-- [ ] AC-P2-11: 自路由禁止仍然生效
+- [x] AC-P2-08: gateway 将 tool_use 请求路由到 oauth/api bridge，不路由到 cli bridge
+- [x] AC-P2-09: session 硬绑定: 同一 session 的请求始终走同一 bridge
+- [x] AC-P2-10: bridge 离线 → 503 session_expired（不 fallback 到其他 bridge）
+- [x] AC-P2-11: 自路由禁止仍然生效
 - [x] AC-P2-19: gateway 支持 `x-api-key` header 认证（Claude Code 默认方式）
-- [ ] AC-P2-20: bridge auth unhealthy（token 刷新失败 / 持续 401/403）→ 触发 session 解绑
-- [ ] AC-P2-21: 含 structured input（`system[]`、thinking、非文本 content block）的请求不路由到 cli bridge
+- [x] AC-P2-20: bridge auth unhealthy（token 刷新失败 / 持续 401/403）→ 触发 session 解绑
+- [x] AC-P2-21: 含 structured input（`system[]`、thinking、非文本 content block）的请求不路由到 cli bridge
 
 ### 6.3 Phase 1C: Fingerprint Normalization + E2E
 
