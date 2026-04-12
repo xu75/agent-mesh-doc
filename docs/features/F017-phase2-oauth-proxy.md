@@ -368,6 +368,8 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 | 2026-04-11 | Phase 1A merged (PR #41) — WS transport + proxy bridge + gateway routing |
 | 2026-04-12 | Phase 1A complete — AC-P2-06 (#43), AC-P2-22 (#44) token guardrail tests |
 | 2026-04-12 | Phase 1B merged — capability routing, hard-fail, auth unhealthy, session affinity (PR #47) |
+| 2026-04-12 | Phase 1C strategy freeze — fingerprint preflight/suspend/auto-refresh + local E2E baseline |
+| 2026-04-12 | Phase 1C partial — env-normalizer, header/body fingerprint, LKG fallback, preflight guard (AC-P2-12/13/14); E2E + drift refresh pending |
 
 ### 6.2 Phase 1B: Routing + Hard-fail
 
@@ -394,15 +396,43 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 **目标**：远端 Claude Code 通过 pool 完成完整工作流，指纹一致。
 
 **任务**：
-- [ ] Header 层指纹: bridge 自生成 UA + x-stainless-*（参考 cc-gateway）
-- [ ] Body 层指纹: `<env>` block 替换为 owner 环境信息（参考 cc-gateway）
-- [ ] E2E 验证: Claude Code CLI 通过 pool 完成 tool use + streaming + multi-turn
+- [x] Header 层指纹: bridge 自生成 UA + x-stainless-*（参考 cc-gateway）
+- [x] Body 层指纹: `<env>` block 替换为 owner 环境信息（参考 cc-gateway）
+- [x] 指纹失败防护: preflight 校验 + 失败熔断（防高频异常上游请求）
+- [ ] 指纹漂移处理: 定时自动刷新 + 漂移检测（`last-known-good` 回滚已完成，定时刷新/漂移检测待实现）
+- [ ] E2E 验证: Claude Code CLI 通过 pool 完成 tool use + streaming + multi-turn（当前仅有 proxy 层 mock-fetch 测试）
 
 **验收标准**：
-- [ ] AC-P2-12: 出站请求 User-Agent / x-stainless-* 与 owner 环境一致
-- [ ] AC-P2-13: 出站请求 body 中 `<env>` block 描述 owner 环境，非 caller 环境
-- [ ] AC-P2-14: 非 Claude Code caller（无 `<env>` block）请求不被修改
-- [ ] AC-P2-15: Claude Code E2E: Read + Write + Bash tool use 完整工作流通过
+- [x] AC-P2-12: 出站请求 User-Agent / x-stainless-* 与 owner 环境一致
+- [x] AC-P2-13: 出站请求 body 中 `<env>` block 描述 owner 环境，非 caller 环境
+- [x] AC-P2-14: 非 Claude Code caller（无 `<env>` block）请求不被修改
+- [ ] AC-P2-15: Claude Code E2E: Read + Write + Bash tool use 完整工作流通过（需 through-pool 集成测试）
+
+**Phase 1C 策略冻结（2026-04-12, CVO 批准）**：
+
+- owner 指纹来源：首次安装采集本机环境并固化配置；支持用户覆盖；源码仅保留模板，不写死机器特征。
+- header canonical 字段：`user-agent`, `anthropic-version`, `x-stainless-lang`, `x-stainless-package-version`, `x-stainless-os`, `x-stainless-arch`, `x-stainless-runtime`, `x-stainless-runtime-version`。
+- `<env>` 采用最小运行面整块替换（whole-block rewrite），不做逐行 patch；运行时必需集为 `workingDirectory/platform/shell/osVersion`。
+- 缺失策略：`bootstrap-warn -> strict`；steady `strict` 下 T1 缺失返回 `503 bridge_fingerprint_unavailable`，且该请求不发上游。
+- 风险防护：按 bridge 统计失败预算，超过阈值进入 `SUSPENDED_FINGERPRINT`，暂停新外部会话路由，待刷新探测恢复。
+- 自动升级：启动时 + 定时（默认 6h）+ 漂移检测触发采集；候选配置经探测成功后晋升，失败回滚 `last-known-good`。
+- 非 Claude caller 全程 passthrough（保持 AC-P2-14 不变）。
+- E2E 运行环境：本地执行（Read + Write + Bash + multi-turn sticky）。
+
+**采纳策略（执行必须遵守）**：
+
+- 双层配置：`env`（完整采集快照）+ `prompt_env`（运行时最小必需集）。
+- `<env>` 使用 whole-block rewrite（整块替换），不做逐行 patch。
+- 指纹策略采用 `bootstrap-warn -> strict`；steady `strict` 下 T1 缺失直接 503 且不发上游。
+- 仅允许 `captured profile` 或 `last-known-good` 参与运行时请求构造。
+- 失败预算触发 `SUSPENDED_FINGERPRINT`，并暂停新外部会话路由。
+
+**避免策略（禁止）**：
+
+- 长期运行在 `warn` 模式（仅允许短时校准窗口）。
+- 使用硬编码通用指纹默认值参与线上请求构造。
+- 将 availability-first 的“无鉴权 fallback 转发”引入到本链路。
+- 让 fallback 资产长期替代真实采集数据。
 
 ### 6.4 Phase 2: 增强（按需）
 
