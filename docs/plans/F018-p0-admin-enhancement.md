@@ -3,16 +3,16 @@
 **Feature:** F018 — `docs/features/F018-plan-pool-admin.md`
 **Goal:** 为 Plan Pool 增加时间+额度+速率限制三维管理，并提供成员自服务面板
 **Acceptance Criteria:**
-- [ ] AC1: 成员有 `expires_at` 字段，到期后 invoke/register 被拒（403 EXPIRED）
-- [ ] AC2: 过期 ≠ suspend：过期成员 status 不变、key 不 revoke，仍可访问 `/v1/me`
-- [ ] AC3: Owner 可在 admin 面板设置/修改成员过期时间和额度
-- [ ] AC4: 时间、额度、速率限制是 AND 关系：全部满足才可调用
-- [ ] AC5: 5H/1W 滚动窗口速率限制：按金额控制，超限返回 429 + Retry-After
-- [ ] AC6: Admin 端可设每个成员的 5H/1W 限额（金额），也可设团队默认值
-- [ ] AC7: suspend/expire 时立即从路由表摘除成员 bridge（不等心跳超时）
-- [ ] AC8: 成员用 API key 可登录 `/member` 查看 effectiveStatus
-- [ ] AC9: Member 端显示额度百分比 + 窗口用量百分比（不暴露金额）
-- [ ] AC10: 成员可看到自己的调用历史和用量统计
+- [x] AC1: 成员有 `expires_at` 字段，到期后 invoke/register 被拒（403 EXPIRED）
+- [x] AC2: 过期 ≠ suspend：过期成员 status 不变、key 不 revoke，仍可访问 `/v1/me`
+- [x] AC3: Owner 可在 admin 面板设置/修改成员过期时间和额度
+- [x] AC4: 时间、额度、速率限制是 AND 关系：全部满足才可调用
+- [x] AC5: 5H/1W 滚动窗口速率限制：按金额控制，超限返回 429 + Retry-After
+- [x] AC6: Admin 端可设每个成员的 5H/1W 限额（金额），也可设团队默认值
+- [x] AC7: suspend/expire 时立即从路由表摘除成员 bridge（不等心跳超时）
+- [x] AC8: 成员用 API key 可登录 `/member` 查看 effectiveStatus
+- [x] AC9: Member 端显示 quota $（available/total）+ per-call $，5H/7D 窗口显示百分比
+- [x] AC10: 成员可看到自己的调用历史和用量统计
 **Architecture:** DB 层增加 `expires_at` + rate limit 列，auth 层从 `AuthResult` 重构为 `AuthContext`（含 `canInvoke/canReadSelf/canAdmin/canRegisterBridge` 权限方法），credit 层新增 `checkRateLimit()` UTC 整点桶实现，前端分 admin.html（owner）和 member.html（成员）两套面板
 **Tech Stack:** TypeScript, better-sqlite3, Fastify, node:test, 原生 HTML/CSS/JS
 **前端验证:** Yes — admin.html + member.html 均需 Chrome 实测

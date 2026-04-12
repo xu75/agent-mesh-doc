@@ -6,7 +6,7 @@ doc_kind: spec
 created: 2026-04-11
 layer: application
 owner_module: plan-pool
-status: spec-approved
+status: p0-deployed-test
 phase: 0
 depends_on:
   - { id: F017, type: blocking, note: "基于 Plan Pool Phase 1.5 的管理页面" }
@@ -15,11 +15,13 @@ roundtable: docs/discussions/F018-admin-roundtable.md
 
 # F018: Plan Pool Admin Enhancement — 管理面板 + 成员自服务
 
-> Status: **spec-approved** | Owner: TBD
+> Status: **P0 deployed to test** | Owner: @gpt52 (impl) + @opus (review/merge)
 > Roundtable 1: 2026-04-11（opus / gemini25 / gpt52）— 时间管理 + 自服务面板 + 架构评审
 > Roundtable 2: 2026-04-11（opus / gemini25 / gpt52）— 5H/1W 速率限制头脑风暴
 > 铲屎官裁定：UTC 整点桶、默认值 5H=$5 1W=$40、P0 含速率限制
 > **@gpt52 formal review passed** 2026-04-11 — 4 findings 全部修复后放行
+> **P0 merged** 2026-04-11 — PR #35 (impl) + PR #38 (fix: admin layout + member $ visibility)
+> **P0 deployed to test** 2026-04-12 — test.mesh-hub.xyz:3011, CVO 验收中
 
 ## Why
 
@@ -205,16 +207,16 @@ const bucketStart7d = nowDay - 6 * 86400_000; // 含当天共 7 个自然天
 ## Acceptance Criteria
 
 ### P0 AC
-- [ ] 成员有 `expires_at` 字段，到期后 invoke/register 被拒（403 EXPIRED）
-- [ ] 过期 ≠ suspend：过期成员 status 不变、key 不 revoke，仍可访问 `/v1/me`
-- [ ] Owner 可在 admin 面板设置/修改成员过期时间和额度
-- [ ] 时间、额度、速率限制是 AND 关系：全部满足才可调用
-- [ ] 5H/1W 滚动窗口速率限制：按金额控制，超限返回 429 + Retry-After
-- [ ] Admin 端可设每个成员的 5H/1W 限额（金额），也可设团队默认值
-- [ ] suspend/expire 时立即从路由表摘除成员 bridge（不等心跳超时）
-- [ ] 成员用 API key 可登录 `/member` 查看 effectiveStatus
-- [ ] Member 端显示额度百分比 + 窗口用量百分比（不暴露金额）
-- [ ] 成员可看到自己的调用历史和用量统计
+- [x] 成员有 `expires_at` 字段，到期后 invoke/register 被拒（403 EXPIRED）
+- [x] 过期 ≠ suspend：过期成员 status 不变、key 不 revoke，仍可访问 `/v1/me`
+- [x] Owner 可在 admin 面板设置/修改成员过期时间和额度
+- [x] 时间、额度、速率限制是 AND 关系：全部满足才可调用
+- [x] 5H/1W 滚动窗口速率限制：按金额控制，超限返回 429 + Retry-After
+- [x] Admin 端可设每个成员的 5H/1W 限额（金额），也可设团队默认值
+- [x] suspend/expire 时立即从路由表摘除成员 bridge（不等心跳超时）
+- [x] 成员用 API key 可登录 `/member` 查看 effectiveStatus
+- [x] Member 端显示 quota $（available/total）+ per-call $，5H/7D 窗口显示百分比
+- [x] 成员可看到自己的调用历史和用量统计
 
 ### P1 AC
 - [ ] Owner 可 reactivate 被 suspend 的成员
