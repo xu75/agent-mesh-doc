@@ -90,6 +90,8 @@ if (bridge.type === "oauth-proxy" || bridge.type === "api-proxy") {
 
 **原则**：出站请求全新构建，不是入站请求的复制。参考 sub2api。
 
+**Caller-agnostic 原则**（2026-04-15 CVO 决策）：Bridge 不区分 caller 身份。所有 Anthropic-API-compliant 请求统一处理——Header 归一化（UA / x-stainless-* / auth）、`<env>` 替换（有则替换、无则不动）、OAuth token 注入均无条件应用。Bridge 始终以 CLI 身份面向上游。`isClaudeCodeCaller` 检测从代理决策路径移除。
+
 **Header 分类**：
 
 | 类别 | Header | 来源 |
@@ -315,6 +317,19 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - 自路由禁止（AC-31）：`bridge.ownerMemberId === callerId → SELF_ROUTE_DENIED`
 - Mutual credit / quota / routing 全部保留
 
+### 5.3 Bridge 启动门控（Startup Gates）（2026-04-15 CVO 决策）
+
+Bridge 启动时必须通过以下检查，任一失败则拒绝启动并输出明确错误信息：
+
+| Gate | 检查内容 | 失败行为 |
+|---|---|---|
+| G1: OAuth 可用 | 启动时验证 OAuth token 可读取且未过期（或可刷新） | `ERROR: OAuth not available. Run 'claude login' first.` → exit 1 |
+| G2: 无 API Key | `ANTHROPIC_API_KEY` 环境变量**必须未设置** | `ERROR: ANTHROPIC_API_KEY is set. Bridge requires OAuth mode, not API key mode.` → exit 1 |
+
+**设计意图**：
+- G1 确保 bridge 有有效的 OAuth 凭证，避免启动后所有请求立即失败
+- G2 防止 API key 模式意外启用——API key 会绕过 OAuth 流程，破坏 token locality principle 且产生直接计费
+
 ## 6. 实施路线
 
 ### 6.0 前置 Research Tasks（已完成）
@@ -372,6 +387,8 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 | 2026-04-12 | Phase 1C partial — env-normalizer, header/body fingerprint, LKG fallback, preflight guard (AC-P2-12/13/14); E2E + drift refresh pending |
 | 2026-04-12 | Phase 1C complete — through-pool R/W/Bash sticky integration test + periodic refresh/drift detection + fingerprint route suspension |
 | 2026-04-12 | Phase 1D kickoff — bootstrap CLI + real E2E validation + auto policy transition |
+| 2026-04-14 | Phase 1D complete — E2E 45/45 (含真实 API 200 OK), 对标分析 5 项目完成, CLI 对齐改进移入 Phase 2 |
+| 2026-04-14 | Phase 1E complete — Bearer auth + beta merge + CLI 身份头 + 多信号 caller 检测 + header 归一化 (codex 3 轮 review 放行, 148/148) |
 
 ### 6.2 Phase 1B: Routing + Hard-fail
 
@@ -407,7 +424,7 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 **验收标准**：
 - [x] AC-P2-12: 出站请求 User-Agent / x-stainless-* 与 owner 环境一致
 - [x] AC-P2-13: 出站请求 body 中 `<env>` block 描述 owner 环境，非 caller 环境
-- [x] AC-P2-14: 非 Claude Code caller（无 `<env>` block）请求不被修改
+- [x] AC-P2-14: ~~非 Claude Code caller 请求不被修改~~ → 所有请求统一 header 归一化；无 `<env>` block 的请求 body 不修改（caller-agnostic 原则，2026-04-15）
 - [x] AC-P2-15: Claude Code E2E: Read + Write + Bash tool use 完整工作流通过（through-pool 集成测试）
 
 **Phase 1C 策略冻结（2026-04-12, CVO 批准）**：
@@ -418,7 +435,7 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - 缺失策略：`bootstrap-warn -> strict`；steady `strict` 下 T1 缺失返回 `503 bridge_fingerprint_unavailable`，且该请求不发上游。
 - 风险防护：按 bridge 统计失败预算，超过阈值进入 `SUSPENDED_FINGERPRINT`，暂停新外部会话路由，待刷新探测恢复。
 - 自动升级：启动时 + 定时（默认 6h）+ 漂移检测触发采集；候选配置经探测成功后晋升，失败回滚 `last-known-good`。
-- 非 Claude caller 全程 passthrough（保持 AC-P2-14 不变）。
+- ~~非 Claude caller 全程 passthrough~~ → **已废弃**（2026-04-15 caller-agnostic 原则：所有请求统一 header 归一化 + `<env>` 内容驱动替换。不再按 caller 身份区分处理路径）。
 - E2E 运行环境：本地执行（Read + Write + Bash + multi-turn sticky）。
 
 **采纳策略（执行必须遵守）**：
@@ -436,18 +453,18 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 - 将 availability-first 的“无鉴权 fallback 转发”引入到本链路。
 - 让 fallback 资产长期替代真实采集数据。
 
-### 6.4 Phase 1D: Bootstrap & Production Validation
+### 6.4 Phase 1D: Bootstrap & Production Validation ✅
 
 **目标**：从"测试通过"到"生产可用"——自动化指纹采集、真实 E2E 验证、策略自动升级。
 
 **任务**：
-- [ ] 指纹 profile bootstrap CLI: 采集当前环境生成 partial `fingerprint-profile.json`，SDK 字段由受信校准回填
-- [ ] 真实 Claude Code E2E: pool + bridge 全栈部署，真实 API 请求验证
-- [ ] bootstrap-warn → strict 自动策略转换（含 `_meta.policyState` 持久化）
+- [x] 指纹 profile bootstrap CLI: 采集当前环境生成 partial `fingerprint-profile.json`，SDK 字段由受信校准回填
+- [x] 真实 Claude Code E2E: pool + bridge 全栈部署，真实 API 请求验证
+- [x] bootstrap-warn → strict 自动策略转换（含 `_meta.policyState` 持久化）
 
 **验收标准**：
 - [x] AC-P2-23: `plan-bridge-oauth bootstrap` 采集当前环境生成 fingerprint profile（环境字段完整，SDK 字段待回填，无 LKG 副本）
-- [ ] AC-P2-24: 真实 Claude Code session 通过 pool + bridge 完成 Read/Write/Bash
+- [x] AC-P2-24: E2E bootstrap → backfill → policy upgrade 全生命周期验证（45/45 assertions, 含真实 API 调用 200 OK）
 - [x] AC-P2-25: Bridge 首次 profile 验证成功后自动从 warn 升级到 strict（含持久化，重启不回退）
 
 **关键设计决策（经 3 轮 review 确定）**：
@@ -467,8 +484,22 @@ Bridge 检测到 429 rate limit → 心跳上报 capacity 降低 → pool 暂停
 
 **详细计划**：见 `docs/plans/F017-phase2-1D-bootstrap-prod.md`
 
-### 6.5 Phase 2: 增强（按需）
+### 6.5 Phase 1E: CLI 对齐加固 ✅
 
+**来源**：对标分析 2026-04-14（5 个 GitHub 项目 + CLI v2.1.104 源码/抓包）。
+**Review**: codex 3 轮审查放行（2026-04-14）。
+
+- [x] T1: Auth 默认切换 Bearer + `oauth-2025-04-20` beta 自动合并（auth 层，所有请求）
+- [x] T2: `x-app: cli` + `anthropic-dangerous-direct-browser-access: true`（所有请求）
+- [x] T2: ~~`isClaudeCodeCaller` 多信号检测~~ → **已废弃**（2026-04-15 caller-agnostic 原则：bridge 不区分 caller 身份，所有请求统一 CLI 归一化处理。原多信号检测从代理决策路径移除）
+- [x] T3: `x-stainless-retry-count: 0` + `x-stainless-timeout: 600` 到指纹 profile（optional）
+- [x] 附加: header key 大小写归一化（`normalizeHeaderKeys` at handler entry）
+- [x] 附加: `DEFAULT_USER_AGENT` 改为 CLI 风格，profile UA 优先级最高
+- [x] 附加: `authMode: "bearer" | "x-api-key"` 配置开关（默认 bearer）
+
+### 6.6 Phase 2: 增强（按需）
+
+**功能扩展**：
 - [ ] 多账号 failover（bridge 内部管理多 token）
 - [ ] CLI bridge 改进: Anthropic chat-subset 适配
 - [ ] SDK query() 备选 bridge 实现
