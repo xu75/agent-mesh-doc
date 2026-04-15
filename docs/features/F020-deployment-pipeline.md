@@ -80,13 +80,13 @@ sudo bash /opt/mesh-hub/scripts/deploy-prod.sh
 
 download page（`/download`）已有完整 UI，但实际的 tar.gz 包不存在。用户下载到 404 HTML，tar 解压失败。
 
-### 4.2 包格式（方案 B：轻量包 + install 脚本引导，CVO 决策）
+### 4.2 包格式（方案 B：全自含包，CVO 决策）
 
-tar.gz 只含编译产物和配置，用户通过 install 脚本引导安装依赖：
+tar.gz 为全自含包，所有依赖在打包时预装。用户解压即可运行（仅需 Node.js）：
 
 ```
 plan-bridge-oauth-{version}-{platform}-{arch}.tar.gz
-├── package.json          # 依赖声明（用户 npm install）
+├── package.json          # 包元信息
 ├── dist/                 # 编译产物
 │   ├── bridge.js
 │   ├── proxy.js
@@ -94,10 +94,18 @@ plan-bridge-oauth-{version}-{platform}-{arch}.tar.gz
 │   ├── token-manager.js
 │   ├── env-normalizer.js
 │   └── index.js
-├── install.sh            # 引导安装脚本（检查环境 + npm install + 配置提示）
+├── node_modules/         # 预装依赖（打包时安装）
+│   ├── @agent-mesh/node/     # workspace dep
+│   ├── @agent-mesh/protocol/ # workspace dep
+│   ├── jose/                 # npm dep
+│   ├── undici/               # npm dep
+│   └── ws/                   # npm dep
+├── install.sh            # 环境检查脚本（检查 Node.js、Claude Code）
 ├── start.sh              # 启动脚本（设置环境变量 + node dist/bridge.js）
 └── README.md             # 快速入门
 ```
+
+> 注：所有依赖在打包时预装，用户无需运行 `npm install`。
 
 ### 4.3 支持平台
 
