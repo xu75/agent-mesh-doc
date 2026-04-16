@@ -805,7 +805,7 @@ LEFT JOIN (
 - [x] AC-28: 一次性邀请码加入——`code + TTL + maxUses`，用完即失效。加入后 TOFU 绑定 publicKey，签发 per-member API key。
 - [x] AC-29: 透支额度模型（Mutual Credit）——`available = contributed - consumed + borrowLimit`。`available <= 0` 时返回 `QUOTA_EXHAUSTED`（HTTP 402）。管理员可为个人设置 `borrow_limit_override`。
 - [x] AC-30: 成本计算优先级——provider 上报 `costUsd` > `tokens × 官方定价` > fixed request weight（$0.02 fallback）。记录 `cost_source` 标注来源。
-- [x] AC-31: 自路由禁止——pool-node 路由硬规则：`bridge.owner_member_id !== caller.member_id`。禁止将请求路由到 caller 自己的 bridge。
+- [x] AC-31: 自路由条件放行——`cli-chat` bridge 始终禁止自路由（子进程 env 回环风险）；`oauth-proxy` bridge 可在注册时声明 `allowOwnerRoute=true` 启用 owner 自路由（默认 false）。自路由请求独立计数（`selfRouteActiveSessions` / `selfRouteMaxConcurrency`），不占用 external 配额。自路由请求零金额记账（`normalized_cost=0`, `cost_source='self_route'`），不影响 quota/rate-limit，但保留审计记录。
 - [x] AC-32: Owner-first（本机优先）——bridge 配置 `shareMode`（`off | idle-only | capped`，默认 `idle-only`）。`idle-only` 模式下 owner 活跃时拒绝外部请求；`externalMaxConcurrency` 默认 1。
 - [x] AC-33: 管理员操作——MVP 最小集：创建 team、创建邀请码、暂停成员、设置透支上限、轮换 API key、查看用量（`GET /v1/admin/usage` 返回 JSON）。其中“设置透支上限”适用于任意 member，包含 team owner 自己。
 

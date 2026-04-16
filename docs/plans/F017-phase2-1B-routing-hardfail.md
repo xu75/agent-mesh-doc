@@ -7,7 +7,7 @@
 - ~~AC-P2-08: gateway 将 tool_use 请求路由到 oauth/api bridge，不路由到 cli bridge~~ ✅ done (70a771d)
 - ~~AC-P2-09: session 硬绑定: 同一 session 的请求始终走同一 bridge~~ ✅ done (82740e7, d5f2bb8)
 - ~~AC-P2-10: bridge 离线 → 503 session_expired（不 fallback 到其他 bridge）~~ ✅ done (d5f2bb8)
-- ~~AC-P2-11: 自路由禁止仍然生效~~ ✅ done (regression verified)
+- ~~AC-P2-11: 自路由条件放行~~ ✅ updated — `oauth-proxy` bridge 可声明 `allowOwnerRoute=true`；`cli-chat` 始终禁止；自路由独立并发 + 零金额记账（2026-04-15 CVO 决策）
 - ~~AC-P2-19: gateway 支持 `x-api-key` header 认证（Claude Code 默认方式）~~ ✅ done (PR #45)
 - ~~AC-P2-20: bridge auth unhealthy（token 刷新失败 / 持续 401/403）→ 触发 session 解绑~~ ✅ done (ebcffd5)
 - ~~AC-P2-21: 含 structured input（`system[]`、thinking、非文本 content block）的请求不路由到 cli bridge~~ ✅ done (70a771d)
