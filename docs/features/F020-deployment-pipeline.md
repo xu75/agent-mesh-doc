@@ -172,6 +172,72 @@ curl -fsSL https://api.mesh-hub.xyz/download/install.sh | bash
 4. 提示设置环境变量
 5. 提示运行 `./start.sh`
 
+### 4.7 install/upgrade 二合一（2026-04-16 铲屎官实测痛点）
+
+> 来源：铲屎官执行 `curl ... | bash` 后手动升级 bridge，经历了 7+ 步命令，误删 .env，fingerprint profile 缺失等问题。
+
+**当前问题**：
+- install.sh 只有"全新安装"路径，无升级
+- `.env` 被 `cat >` 覆盖，密钥丢失风险（铲屎官实际误删）
+- 新增的强制 env var（`PLAN_BRIDGE_OAUTH_FINGERPRINT_PROFILE_PATH`）不在模板里
+- tarball 安装没有 `.git`，`git pull` 直接 fatal
+- `start.sh` 路径不统一（tarball 在版本子目录，source 在顶层）
+
+**架构决策（Design Gate 2026-04-16，宪宪提案 + 砚砚评审）**：
+
+- **Upgrade = source only**（必须有 `.git`，走 `git pull` → `pnpm install` → `build`）
+- **Fresh install = source 优先 + tarball 兜底**（tarball 在无 pnpm/git 场景仍有价值）
+- 旧 tarball 安装检测到 → 提示一次性迁移到 source 路径
+- **.env merge 用 Node 脚本**（`scripts/bridge-env-merge.mjs`），install.sh 只做入口调用
+  - 理由：shell 逐 key 在转义、注释保留、空值语义上容易踩坑
+
+**改造要求**：
+
+| 项 | 行为 |
+|---|---|
+| 检测已有安装 | `~/.plan-bridge-oauth/agent-mesh/.git` 存在 → upgrade 路径 |
+| upgrade | `git pull` → `pnpm install` → `pnpm build`（不重新 clone） |
+| .env 安全 | 永不覆盖，`scripts/bridge-env-merge.mjs` 做 merge；改前 `cp .env .env.bak.$(date +%s)` |
+| fingerprint 自动化 | 检测 profile 文件不存在 → 自动 `node dist/bootstrap-cli.js --out $PROFILE_PATH`；已存在且 preflight 通过不重写（幂等） |
+| 固定入口 | `~/.plan-bridge-oauth/start.sh`（顶层，不管 tarball/source 都在这） |
+| 版本来源 | 从 `manifest.json`（pool 端点）读取，不硬编码 |
+| 权限安全 | `.env` 和 fingerprint profile 强制 `chmod 600` |
+| 非交互模式 | `--non-interactive` flag，CI/远程脚本不卡住 |
+| manifest 失败兜底 | 拉取失败 → 使用本地已知版本或明确报错退出 |
+| 并发锁（P1） | 防止重复执行脚本互相覆盖 |
+| 原子切换（P1） | build 到临时目录，成功后切换；失败保留旧可运行版本 |
+
+### 4.8 manifest.json（版本发现）
+
+Pool 提供 `GET /download/manifest.json`：
+```json
+{ "version": "0.2.0", "minNodeVersion": "20", "files": {
+  "darwin-arm64": "plan-bridge-oauth-0.2.0-darwin-arm64.tar.gz",
+  "darwin-x64": "plan-bridge-oauth-0.2.0-darwin-x64.tar.gz",
+  "linux-x64": "plan-bridge-oauth-0.2.0-linux-x64.tar.gz"
+}}
+```
+install.sh 读此端点获取最新版本，消除硬编码。失败时明确报错。
+
+### 4.9 doctor 子命令
+
+`node packages/plan-bridge-oauth/dist/doctor.js` 一键诊断：
+- OAuth token 状态
+- 关键 env var 完整性（含 `FINGERPRINT_PROFILE_PATH`）
+- fingerprint profile 存在性 + preflight
+- Hub/Pool 连通性
+- start.sh 存在性 + 可执行权限
+- 输出"下一步唯一命令"
+
+**目标体验**：
+```bash
+# 新装或升级，同一条命令
+curl -fsSL https://api.mesh-hub.xyz/download/install.sh | bash
+# → Updated to v0.2.0, env migrated, profile generated, ready.
+
+~/.plan-bridge-oauth/start.sh
+```
+
 ## 5. 版本管理
 
 ### 5.1 版本号
@@ -189,11 +255,18 @@ curl -fsSL https://api.mesh-hub.xyz/download/install.sh | bash
 
 ## 6. 实施优先级
 
-| 优先级 | 任务 | 依赖 |
-|---|---|---|
-| P0 | Bridge tar.gz 打包 + 上传到 download 目录 | 无 |
-| P0 | install.sh 实现 | tar.gz 就绪 |
-| P1 | Staging 环境搭建（test.mesh-hub.xyz） | Caddy 配置 |
-| P1 | deploy-staging.sh | staging 目录结构 |
-| P2 | 版本号自动化（package.json → download page） | 无 |
-| P2 | 部署日志 | 无 |
+**落地顺序（Design Gate 2026-04-16 对齐）**：
+
+| 步骤 | 任务 | 依赖 | 优先级 |
+|------|------|------|--------|
+| 1 | manifest.json 端点 + version discovery（§4.8） | pool 路由 | P0 |
+| 2 | install/upgrade 分流 + 顶层固定 start.sh（§4.7） | Step 1 | P0 |
+| 3 | Node env merge + backup + required key auto-fill（§4.7） | `scripts/bridge-env-merge.mjs` | P0 |
+| 4 | fingerprint auto-bootstrap + preflight（§4.7） | bootstrap-cli 已有 | P0 |
+| 5 | doctor 子命令（§4.9） | Step 1-4 | P1 |
+| — | 并发锁 + 原子切换 + 回滚 | Step 2 | P1 |
+| — | Bridge tar.gz 打包 + 上传到 download 目录 | 无 | P1（降级，source 优先） |
+| — | Staging 环境搭建 | Caddy 配置 | P1 |
+| — | deploy-staging.sh | staging 目录结构 | P1 |
+| — | 版本号自动化（package.json → download page） | 无 | P2 |
+| — | 部署日志 | 无 | P2 |
